@@ -19,7 +19,7 @@ export class Home extends Component {
 
     render() {
         return (
-            <div>
+            <div className='home'>
                 <button onClick={this.login}>Вход</button>
             </div>
         )
