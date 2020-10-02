@@ -14,8 +14,8 @@ export class Home extends Component {
     }
 
     componentDidMount() {
-        if (this.props.user.user != undefined) {
-            window.location.replace(URL + '#/service-list/');
+        if (this.props.user != undefined) {
+            window.location.replace(URL + 'service-list/');
         }
     }
 
