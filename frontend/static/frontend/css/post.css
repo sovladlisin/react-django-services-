@@ -1,0 +1,123 @@
+.post {
+    background: #fff;
+    width: 550px;
+    margin: 15px auto;
+    position: relative;
+}
+
+img.thumbnail {
+    height: 50px;
+    width: 50px;
+    border-radius: 25px;
+    float: left;
+}
+
+p.name {
+    float: left;
+    font-size: 10pt;
+    height: 30px;
+    line-height: 30px;
+    margin: 3px 15px;
+    font-weight: 600;
+    color: #314e8a;
+}
+
+.header {
+    height: 40px;
+    padding: 15px 20px 0;
+    position: relative;
+}
+
+p.date {
+    position: absolute;
+    top: 43px;
+    left: 85px;
+    font-size: 12px;
+    color: #707070;
+}
+
+.text {
+    font-size: 12px;
+    font-weight: 500;
+    width: 510px;
+    margin: 25px;
+    line-height: 1.462;
+    white-space: pre-line;
+    overflow-wrap: break-word;
+}
+
+.text a {
+    color: #4848b2;
+    font-weight: 600;
+}
+
+.add-new-post {
+    display: grid;
+    grid-template-columns: 1fr 200px;
+    gap: 15pt;
+    width: 900px;
+    margin: 45px auto 0px auto;
+}
+
+.add-new-post input{
+    width: auto;
+    padding: 5px 30px;
+    font-size: 10pt;
+    height: 30px;
+    box-shadow: 0px 2px 0px 0px rgb(35,45,65, 0.3);
+}
+
+button#submit_post {
+    background: #4a76a8;
+    color: white;
+    transition: 0.3s;
+}
+
+.footer {
+    height: 30px;
+    width: 510px;
+    margin: 0 auto;
+    border-top: 1px solid #dcdcdc;
+    padding: 12px 0;
+    font-size: 9pt;
+    color: #4a76a8;
+}
+
+.footer p {
+    float: left;
+    margin-right: 11px;
+}
+
+.footer i {
+    margin-right: 6px;
+}
+
+.footer .footer-right {
+    float: right;
+}
+p#show-all {
+    margin: -15px 0 10px 25px;
+    font-size: 12px;
+    color: #4a76a8;
+    font-weight: 700;
+    cursor: pointer;
+}
+.post-control-bar {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+button.delete-post {
+    color: #c11f1f;
+    font-size: 10pt;
+}
+.doc {width: 500px;}
+
+.attachments {
+    margin: 25px;
+    width: 550px;
+    overflow: hidden;
+}
+img {
+    width: 100%;
+}
