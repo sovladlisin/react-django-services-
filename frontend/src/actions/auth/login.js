@@ -8,6 +8,7 @@ export const login = () => dispatch => {
 
     //eslint-disable-next-line no-undef
     VK.Auth.login(r => {
+        console.log(r)
         if (r.session) {
             dispatch({
                 type: LOGIN_SUCCESS,

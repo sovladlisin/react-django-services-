@@ -13,6 +13,12 @@ export class Home extends Component {
         user: PropTypes.object.isRequired
     }
 
+    componentDidMount() {
+        if (this.props.user.user != undefined) {
+            window.location.replace(URL + '#/service-list/');
+        }
+    }
+
     login = () => {
         this.props.login()
     }
