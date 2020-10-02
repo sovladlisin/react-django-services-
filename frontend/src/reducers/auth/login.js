@@ -12,15 +12,10 @@ export default function (state = initialState, action) {
             return { ...state, isFetching: true, error: '' }
 
         case LOGIN_SUCCESS:
-            window.location.replace(URL + '#/service-list/');
             return { ...state, isFetching: false, user: action.payload }
 
-        case LOGIN_FAIL:
-            window.location.replace(URL + '#/');
-            return { ...state, isFetching: false, error: action.payload.message }
-
         case LOGOUT:
-            window.location.replace(URL + '#/');
+            window.location.replace(URL);
             return { ...state, user: {}, error: '' }
 
         default:
