@@ -6,6 +6,11 @@ import $ from "jquery"
 
 
 export const getPosts = (user_id) => dispatch => {
+    if (user_id === undefined)
+        dispatch({
+            type: GET_POSTS,
+            payload: []
+        })
     axios.get(`/api/userPosts?` + querystring.stringify({ 'user_id': user_id })).then(res => {
         dispatch({
             type: GET_POSTS,
