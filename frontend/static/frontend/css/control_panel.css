@@ -1,0 +1,134 @@
+.control-pannel {
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: #4a76a8;
+    width: 320px;
+}
+
+.user {
+    display: inline-block;
+    width: 280px;
+    padding: 10px;
+}
+
+.users {
+    border: 1px solid white;
+    width: 300px;
+    margin: 5px 10px;
+    height: 400px;
+    overflow-y: auto;
+}
+
+.user img {
+    height: 30px;
+    width: 30px;
+    border-radius: 30px;
+    border: 3px solid white;
+    float: left;
+}
+
+.user .user-name {
+    line-height: 33px;
+    color: white;
+}
+.user:hover{
+    background: #2f5784;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+p.title-card {
+    width: 302px;
+    position: relative;
+    padding: 15px 12px;
+    color: white;
+    cursor: pointer;
+    font-size: 10pt;
+}
+.title-card i{
+    position:absolute;
+    right: 20px;
+}
+
+.users input {
+    width: 300px;
+    padding: 10px;
+    background: #ffffffab;
+    font-size: 9pt;
+}
+
+.user-window {
+    position: fixed;
+    width: auto;
+    background: white;
+    top: 15px;
+    left: 335px;
+    box-shadow: 0px 2px 0px 0px rgb(35,45,65, 0.3);
+}
+
+.user-window img {
+    height: 50px;
+    width: 50px;
+    border-radius: 48px;
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translate(-50%, 0%);
+}
+
+p.user-window-id {
+    color: #827575;
+    width: 100%;
+    font-size: 9pt;
+    text-align: center;
+}
+
+p.user-window-name {
+    width: 100%;
+    text-align: center;
+    height: 20px;
+    line-height: 20px;
+    font-size: 10pt;
+    float: left;
+}
+.user-info {
+    margin-top: 70px;
+    height: 30px;
+}
+
+.user-window i.fas.fa-times {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: #e22a2a;
+    cursor: pointer;
+}
+
+.user-actions {
+    margin-top: 10px;
+}
+
+.user-actions {
+    margin-top: 10px;
+}
+
+button#remove-restriction {
+    background: #d11f1f;
+    color: white;
+    padding: 6px;
+    font-size: 9pt;
+    cursor: pointer;
+    height: 30px;
+}
+button#add-restriction {
+    background: #259e60;
+    color: white;
+    padding: 6px;
+    font-size: 9pt;
+    cursor: pointer;
+    height: 30px;
+}

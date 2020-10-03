@@ -5,10 +5,12 @@ import PropTypes from 'prop-types';
 
 import { stringify } from 'qs';
 
-import { getPosts, renderPost, deletePost } from '../actions/think_bank/posts'
+import { getPosts, renderPost, deletePost, getPermissions } from '../actions/think_bank/posts'
 import { checkLogin } from '../actions/auth/login'
 
 import ReactLinkify from 'react-linkify';
+import { get } from 'jquery';
+import ControlPanel from './ControlPanel';
 
 
 
@@ -21,12 +23,14 @@ export class Workspace_TB extends Component {
         getPosts: PropTypes.func.isRequired,
         checkLogin: PropTypes.func.isRequired,
         deletePost: PropTypes.func.isRequired,
+        getPermissions: PropTypes.func.isRequired,
 
     }
 
     state = {
         full_posts: [],
         post_link: '',
+        control_panel: false,
     }
 
     componentDidMount() {
@@ -39,6 +43,11 @@ export class Workspace_TB extends Component {
     onChange = (e) => {
         this.setState({ [e.target.name]: e.target.value })
     }
+
+    toggleControlPanel = () => {
+        this.setState({ control_panel: !this.state.control_panel })
+    }
+
 
     submitPostByLink = () => {
         document.getElementById('post_input').value = "";
@@ -152,10 +161,12 @@ export class Workspace_TB extends Component {
         return null
     }
 
+
+
     render() {
         return (
             <Fragment>
-                {/* <div className="background" style={{ backgroundImage: 'url("' + Background + '")' }}></div> */}
+                {this.state.control_panel ? <ControlPanel toggle={this.toggleControlPanel} /> : null}
                 <div className="add-new-post">
                     <input id="post_input" name="post_link" onChange={this.onChange} placeholder="Введите ссылку на запись"></input>
                     <button id="submit_post" onClick={this.submitPostByLink}>Загрузить запись</button>
@@ -163,6 +174,10 @@ export class Workspace_TB extends Component {
                 <div className="post-container">
                     {this.renderPosts()}
                 </div>
+                {this.state.control_panel ? null :
+                    <button id='open-control-panel' onClick={() => { this.toggleControlPanel() }}><i class="fas fa-compass"></i> </button>
+                }
+
             </Fragment>
         )
     }
@@ -172,7 +187,8 @@ const mapDispatchToProps = {
     getPosts,
     renderPost,
     checkLogin,
-    deletePost
+    deletePost,
+    getPermissions
 };
 
 const mapStateToProps = state => ({

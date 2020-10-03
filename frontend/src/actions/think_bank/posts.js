@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ADD_POST, GET_POSTS, REMOVE_POST } from '../types';
+import { ADD_POST, ADD_USER_PERMISSION, GET_POSTS, GET_USERS, REMOVE_POST, REMOVE_USER_PERMISSION, GET_PERMISSIONS } from '../types';
 import querystring from 'querystring';
 import { func } from 'prop-types';
 import $ from "jquery"
@@ -19,6 +19,50 @@ export const getPosts = (user_id) => dispatch => {
     }).catch((err) => {
         console.log(err)
     });
+}
+
+export const getUsers = () => dispatch => {
+    axios.get(`api/vkUsers`).then(res => {
+        dispatch({
+            type: GET_USERS,
+            payload: res.data
+        })
+    }).catch((err) => {
+        console.log(err)
+    })
+}
+
+export const addUserPermission = (owner_id, viewer_id, user) => dispatch => {
+    const body = { owner_id: owner_id, viewer_id: viewer_id }
+    axios.post(`api/vkPermissions/`, body).then(res => {
+        const new_user = { 'id': res.data.id, 'user_name': user.user_name, 'user_id': user.user_id, 'user_img': user.user_img }
+        dispatch({
+            type: ADD_USER_PERMISSION,
+            payload: new_user
+        })
+    }).catch((err) => {
+        console.log(err)
+    })
+}
+
+export const removeUserPermission = (id) => dispatch => {
+    axios.delete(`api/vkPermissions/${id}/`).then(res => {
+        dispatch({
+            type: REMOVE_USER_PERMISSION,
+            payload: id
+        })
+    })
+}
+
+export const getPermissions = (user_id) => dispatch => {
+    var body = { id: user_id }
+    axios.get(`api/vkUserPermissions`, { headers: body }).then(res => {
+        console.log(res.data)
+        dispatch({
+            type: GET_PERMISSIONS,
+            payload: res.data
+        })
+    })
 }
 
 export const renderPost = (id, user_id, access_token) => dispatch => {

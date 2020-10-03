@@ -32,6 +32,14 @@ export const extractToken = () => dispatch => {
             type: LOGIN_SUCCESS,
             payload: user
         })
+
+        const newuser = { user_id: data.id, user_img: data.photo_200, user_name: name }
+        const body = JSON.stringify(newuser)
+        axios.post(`api/addUser`, body).then(res => {
+            console.log(res.data)
+        }).catch((err) => {
+            console.log(err.data)
+        })
     })
 }
 
