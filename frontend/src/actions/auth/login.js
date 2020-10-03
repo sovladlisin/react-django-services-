@@ -26,7 +26,7 @@ export const extractToken = () => dispatch => {
         dataType: 'jsonp',
     }).done(function (r) {
         const data = r.response[0]
-        const name = data.first_name + data.last_name
+        const name = data.first_name + ' ' + data.last_name
         const user = { access_token: access_token, name: name, id: data.id, img: data.photo_200 }
         dispatch({
             type: LOGIN_SUCCESS,
