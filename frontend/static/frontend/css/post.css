@@ -104,13 +104,11 @@ p#show-all {
 }
 .post-control-bar {
     position: absolute;
-    top: 5px;
-    right: 5px;
+    width: 50px;
+    top: 3px;
+    right: -60px;
 }
-button.delete-post {
-    color: #c11f1f;
-    font-size: 10pt;
-}
+
 .doc {width: 500px;}
 
 .attachments {
@@ -132,4 +130,116 @@ button#open-control-panel {
     width: 50px;
     color: white;
     font-size: 19pt;
+}
+
+.post-control-bar button {
+    color: white;
+    position: relative;
+    border-radius: 40px;
+    font-size: 7pt;
+    width: 35px;
+    margin: 5px 0 0 0;
+    height: 35px;
+}
+
+button.share-post {
+    background: #35a635;
+}
+
+button.delete-post {
+    background: #c11f1f;
+}
+.comments {
+    width: 300px;
+    overflow-y: auto;
+    height: 175px;
+    background: white;
+    box-shadow: 0px 2px 0px 0px rgb(35,45,65, 0.3);
+}
+.comment-input-container {
+    position: absolute;
+    bottom: -50px;
+    width: 300px;
+}
+
+input.comment-input {
+    padding: 5px 15px;
+    font-size: 10pt;
+    height: 30px;
+    float: left;
+    width: 220px;
+    margin-right: 10px;
+    box-shadow: 0px 2px 0px 0px rgb(35,45,65, 0.3);
+}
+
+button.add-comment {
+    width: 40px;
+    height: 40px;
+    color: white;
+    float: left;
+    background: #4a76a8;
+}
+.comment {
+    width: 290px;
+    margin: 5px;
+    float: left;
+    display: grid;
+    grid-template-columns: 30px 260px;
+}
+p.comment-name {
+    color: #4a76a8;
+    font-size: 9pt;
+    padding: 0px 5px;
+}
+
+.comment-image img {
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
+}
+
+p.comment-text {
+    font-size: 9pt;
+    padding: 0px 5px;
+    line-height: 14px;
+}
+
+button.delete-comment {
+    color: #4a76a8;
+    font-size: 8pt;
+    padding: 0 5px;
+}
+.comment-container {
+    position: absolute;
+    top: 0;
+    right: -355px;
+}
+button.comments-post {
+    background: #4a76a8;
+}
+p.bank-title {
+    margin: 10px auto;
+    background: white;
+    box-shadow: 0px 2px 0px 0px rgb(35,45,65, 0.3);
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+}
+p.empty-bank {
+    font-size: 16pt;
+    color: darkgrey;
+    margin: 20px auto;
+    width: 96px;
+}
+span#comment-count {
+    position: absolute;
+    top: -4px;
+    right: -6px;
+    background: red;
+    height: 20px;
+    padding: 0px 5px;
+    line-height: 20px;
+    min-width: 10px;
+    text-align: center;
+    border-radius: 20px;
 }

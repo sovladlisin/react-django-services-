@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from think_bank.models import Post, VkUser, VkUserPermissions
+from think_bank.models import Post, VkUser, VkUserPermissions, Comment
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -17,4 +17,10 @@ class VkUserSerializer(serializers.ModelSerializer):
 class VkUserPermissionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = VkUserPermissions
+        fields = '__all__'
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
         fields = '__all__'

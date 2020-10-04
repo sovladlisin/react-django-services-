@@ -1,8 +1,14 @@
 export const GET_POSTS = 'GET_POSTS'
 export const ADD_POST = 'ADD_POST'
 export const REMOVE_POST = 'REMOVE_POST'
+export const GET_POST = 'GET_POST'
+export const GET_POST_COMMENTS = 'GET_POST_COMMENTS'
+export const ADD_COMMENT = 'ADD_COMMENT'
+export const DELETE_COMMENT = 'DELETE_COMMENT'
+export const PURGE_POSTS = 'PURGE_POSTS'
+export const GET_USER_BANK = 'GET_USER_BANK'
 
-export const URL = "https://" + window.location.host + '/'
+export const URL = window.location.host.includes('heroku') ? "https://" + window.location.host + '/' : "http://" + window.location.host + '/'
 
 export const LOGIN_REQUEST = 'LOGIN_REQUEST'
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
@@ -10,6 +16,10 @@ export const LOGIN_FAIL = 'LOGIN_FAIL'
 export const LOGOUT = 'LOGOUT'
 
 export const GET_USERS = 'GET_USERS'
+export const GET_USER_BY_VK_ID = 'GET_USER_BY_VK_ID'
 export const REMOVE_USER_PERMISSION = 'REMOVE_USER_PERMISSION'
 export const ADD_USER_PERMISSION = 'ADD_USER_PERMISSION'
 export const GET_PERMISSIONS = 'GET_PERMISSIONS'
+
+export const CREATE_ALERT = 'CREATE_ALERT'
+export const CLEAR_ALERTS = 'CREATE_ALERTS'

@@ -5,13 +5,18 @@ import PropTypes from 'prop-types';
 
 import { stringify } from 'qs';
 
-import { getPosts, renderPost, deletePost, getPermissions } from '../actions/think_bank/posts'
+import { getPosts, renderPost, deletePost, getPermissions, getPostComments, addComment, deleteComment } from '../actions/think_bank/posts'
+import { createAlert } from '../actions/alerts/alerts'
 import { checkLogin } from '../actions/auth/login'
 
-import ReactLinkify from 'react-linkify';
 import { get } from 'jquery';
 import ControlPanel from './ControlPanel';
+import { Link } from 'react-router-dom';
 
+
+import copy from "copy-to-clipboard";
+import { URL } from '../actions/types';
+import Post from './Post';
 
 
 
@@ -24,11 +29,13 @@ export class Workspace_TB extends Component {
         checkLogin: PropTypes.func.isRequired,
         deletePost: PropTypes.func.isRequired,
         getPermissions: PropTypes.func.isRequired,
-
+        createAlert: PropTypes.func.isRequired,
+        getPostComments: PropTypes.func.isRequired,
+        addComment: PropTypes.func.isRequired,
+        deleteComment: PropTypes.func.isRequired,
     }
 
     state = {
-        full_posts: [],
         post_link: '',
         control_panel: false,
     }
@@ -70,12 +77,10 @@ export class Workspace_TB extends Component {
         }
     }
 
-    show_post = (id) => {
-        if (this.state.full_posts.includes(id) === false) this.setState({ full_posts: [...this.state.full_posts, id] })
-        else this.setState({ full_posts: this.state.full_posts.filter(index => index != id) })
-    }
+
 
     renderPosts = () => {
+        if (this.props.posts.length === 0) return (<p className='empty-bank'>Банк пуст</p>)
         var data = this.props.posts
         data.sort((a, b) => {
             if (a.id < b.id) {
@@ -85,83 +90,9 @@ export class Workspace_TB extends Component {
         });
 
         return data.map(item => {
-
-            const date = new Date(item.date * 1000);
-
-            var show_check = false
-            var text_style = {}
-            if (item.text.length > 300) {
-                show_check = this.state.full_posts.includes(item.id) ? false : true
-                text_style = show_check ? { height: '100px', overflow: 'hidden' } : {}
-            }
-
-            const post_custom_id = item.owner_id + "_" + item.post_id
-            var post_link = "https://vk.com/wall" + post_custom_id
-
-
-            return (
-                <Fragment>
-                    <div className='post'>
-                        <div className='header'>
-                            <img className='thumbnail' src={item.owner_img_link}></img>
-                            <p className='name'><a target="_blank" rel="noopener noreferrer" href={post_link}>{item.owner_name}</a></p>
-                            <p className='date'>Опубликовано: {date.toLocaleDateString('en-GB')}</p>
-                        </div>
-
-                        <div className='content'>
-                            <div className='text' style={text_style}>
-                                <ReactLinkify>{item.text}</ReactLinkify>
-                            </div>
-                            {show_check ? <p id="show-all" onClick={() => { this.show_post(item.id) }}>Показать полностью...</p> : null}
-
-                            <div className='attachments'>
-                                {this.renderAttachments(item.attachments)}
-                            </div>
-                        </div>
-
-                        <div className='footer'>
-                            <p><i class="fas fa-heart"></i> {item.likes_count}</p>
-                            <p><i class="fas fa-comment-alt"></i>{item.comments_count}</p>
-                            <p className='footer-right'><i class="fas fa-retweet"></i>{item.reposts_count}</p>
-                            <p className='footer-right'><i class="fas fa-eye"></i>{item.views_count}</p>
-                        </div>
-                        <div className='post-control-bar'>
-                            <button className='delete-post' onClick={() => this.props.deletePost(item.id)}><i class="fas fa-trash-alt"></i></button>
-                        </div>
-                    </div>
-                </Fragment>
-            )
+            return <Post post={item}></Post>
         })
-        return null
     }
-
-    renderAttachments = (attachments) => {
-        if (attachments != 'Не указано') {
-            const data = JSON.parse(attachments)
-            return data.map(item => {
-                switch (item.type) {
-                    case 'doc':
-                        return (
-                            <div className='doc'>
-                                <a href={item.doc.url}><img src={item.doc.preview.photo.sizes[2].src}></img></a>
-                            </div>
-                        )
-                    case 'photo':
-                        return (
-                            <div className='doc'>
-                                <img src={item.photo.sizes[item.photo.sizes.length - 1].url}></img>
-                            </div>
-                        )
-
-                    default:
-                        return null
-                }
-            })
-        }
-        return null
-    }
-
-
 
     render() {
         return (
@@ -188,12 +119,17 @@ const mapDispatchToProps = {
     renderPost,
     checkLogin,
     deletePost,
-    getPermissions
+    getPermissions,
+    createAlert,
+    getPostComments,
+    addComment,
+    deleteComment
 };
 
 const mapStateToProps = state => ({
     posts: state.posts.all,
-    user: state.login.user
+    user: state.login.user,
+    comments: state.posts.comments
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Workspace_TB);

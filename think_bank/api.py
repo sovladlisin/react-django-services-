@@ -1,13 +1,15 @@
 from django.http import StreamingHttpResponse, HttpResponseRedirect, HttpResponse
 from django.db.models import Q
-from think_bank.models import Post, VkUserPermissions, VkUser
+from think_bank.models import Post, VkUserPermissions, VkUser, Comment
 from rest_framework import viewsets, permissions
-from .serializers import PostSerializer, VkUserPermissionsSerializer, VkUserSerializer
+from .serializers import PostSerializer, VkUserPermissionsSerializer, VkUserSerializer, CommentSerializer
 from rest_framework import generics
 from rest_framework.views import APIView, Response
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 from django.http import JsonResponse
+from django.core import serializers
+from django.forms.models import model_to_dict
 import json
 # perm = permissions.IsAuthenticated
 perm = permissions.AllowAny
@@ -39,17 +41,14 @@ class VkUserPermissionsViewSet(viewsets.ModelViewSet):
 
     serializer_class = VkUserPermissionsSerializer
 
-# class PostByUser(generics.ListAPIView):
-#     serializer_class = PostSerializer
 
-#     def get_queryset(self):
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    permission_classes = [
+        perm
+    ]
 
-#         queryset = Post.objects.all()
-#         id = self.request.query_params.get('user_id', None)
-#         print(self.request.data)
-#         if id is not None:
-#             queryset = queryset.filter(user_id=id)
-#         return queryset
+    serializer_class = CommentSerializer
 
 
 class PostByUser(viewsets.ModelViewSet):
@@ -102,4 +101,44 @@ def addUser(request):
                 return HttpResponse('Success')
             else:
                 return HttpResponse('Already exists')
+    return HttpResponse('Wrong request')
+
+
+@csrf_exempt
+def getPostById(request):
+    if request.method == 'GET':
+        id = request.headers.get('id', None)
+        if id is not None:
+            post = Post.objects.get(pk=id)
+            dict_obj = model_to_dict(post)
+            return JsonResponse(dict_obj, safe=False)
+        return HttpResponse('404')
+    return HttpResponse('Wrong request')
+
+
+@csrf_exempt
+def getUserByVkId(request):
+    if request.method == 'GET':
+        id = request.headers.get('id', None)
+        if id is not None:
+            user = VkUser.objects.filter(user_id=id).first()
+            dict_obj = model_to_dict(user)
+            return JsonResponse(dict_obj, safe=False)
+        return HttpResponse('404')
+    return HttpResponse('Wrong request')
+
+
+def getPostComments(request):
+    if request.method == 'GET':
+        id = request.headers.get('id', None)
+        if id is not None:
+            result = []
+            comments = Comment.objects.all().filter(post_id=id)
+            for comment in comments:
+                user = VkUser.objects.all().filter(user_id=comment.user_id).first()
+                temp = {'id': comment.pk, 'post_id': comment.post_id, 'user_id': comment.user_id,
+                        'user_img': user.user_img, 'user_name': user.user_name, 'comment': comment.comment}
+                result.append(temp)
+            return JsonResponse(result, safe=False)
+        return HttpResponse('404')
     return HttpResponse('Wrong request')

@@ -134,3 +134,11 @@ button#add-restriction {
     cursor: pointer;
     height: 30px;
 }
+button#bank-link {
+    background: #35a635;
+    color: white;
+    padding: 6px;
+    font-size: 9pt;
+    cursor: pointer;
+    height: 30px;
+}

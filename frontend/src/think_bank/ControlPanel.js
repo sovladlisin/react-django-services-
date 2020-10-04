@@ -16,6 +16,7 @@ export class ControlPanel extends Component {
         search_input: '',
         selected_user_window: false,
         selected_user: {},
+        trusted_users_window: false,
 
         proccessed_permissions: []
     }
@@ -46,6 +47,21 @@ export class ControlPanel extends Component {
 
     onChange = (e) => {
         this.setState({ [e.target.name]: e.target.value })
+    }
+
+    renderTrustedUsers = () => {
+        const data = this.props.users.filter(item => this.state.proccessed_permissions.includes(item.user_id))
+
+        return data.map(item => {
+            if (this.props.user.id != item.user_id)
+                return (
+                    <div className='user' onClick={() => { this.setUserWindow(item) }}>
+                        <img style={{ borderColor: 'white' }} src={item.user_img}></img>
+                        <p className='user-name'>{item.user_name}</p>
+                    </div>
+                )
+            return null
+        })
     }
 
 
@@ -110,6 +126,21 @@ export class ControlPanel extends Component {
                             placeholder='Поиск по имени или id'>
                         </input>
                         {this.renderUsers()}
+                    </div>
+                </Fragment>
+                    : null}
+
+                <p className='title-card'
+                    onClick={() => { this.setState({ trusted_users_window: !this.state.trusted_users_window }) }}>
+                    Одобренные пользователи
+                    {this.state.trusted_users_window ?
+                        <i class="fas fa-long-arrow-alt-down"></i> :
+                        <i class="fas fa-long-arrow-alt-right"></i>}
+                </p>
+
+                {this.state.trusted_users_window ? <Fragment>
+                    <div className='users'>
+                        {this.renderTrustedUsers()}
                     </div>
                 </Fragment>
                     : null}

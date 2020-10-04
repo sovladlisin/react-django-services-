@@ -6,6 +6,10 @@ from django.views.generic import TemplateView
 REACT_ROUTES = [
     'service-list',
     'think-bank',
+    'post/',
+    r'^post/(?P<user>\d+)/(?P<id>\d+)/$',
+    'userbank/',
+    r'^userbank/(?P<userbankid>\d+)/$',
 ]
 
 urlpatterns = [

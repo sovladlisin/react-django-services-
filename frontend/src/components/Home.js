@@ -5,6 +5,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { login } from '../actions/auth/login'
 import { URL } from '../actions/types';
+import { REGISTER } from 'redux-persist';
+
+import { purge } from '../actions/think_bank/posts'
 
 export class Home extends Component {
 
@@ -14,12 +17,14 @@ export class Home extends Component {
     }
 
     componentDidMount() {
-        if (this.props.user != undefined) {
-            if (Object.keys(this.props.user) > 0) window.location.replace(URL + 'service-list');
+        if (this.props.registered) {
+            this.props.purge()
+            window.location.replace(URL + 'service-list');
         }
     }
 
     login = () => {
+        this.props.purge()
         this.props.login()
     }
 
@@ -33,11 +38,13 @@ export class Home extends Component {
 }
 
 const mapDispatchToProps = {
-    login
+    login,
+    purge
 };
 
 const mapStateToProps = state => ({
-    user: state.login.user
+    user: state.login.user,
+    registered: state.login.registered
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

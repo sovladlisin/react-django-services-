@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ADD_POST, ADD_USER_PERMISSION, GET_POSTS, GET_USERS, REMOVE_POST, REMOVE_USER_PERMISSION, GET_PERMISSIONS } from '../types';
+import { DELETE_COMMENT, ADD_COMMENT, GET_POST_COMMENTS, ADD_POST, ADD_USER_PERMISSION, GET_POSTS, GET_USERS, REMOVE_POST, REMOVE_USER_PERMISSION, GET_PERMISSIONS, GET_POST, GET_USER_BY_VK_ID, URL, PURGE_POSTS, GET_USER_BANK } from '../types';
 import querystring from 'querystring';
 import { func } from 'prop-types';
 import $ from "jquery"
@@ -11,7 +11,7 @@ export const getPosts = (user_id) => dispatch => {
             type: GET_POSTS,
             payload: []
         })
-    axios.get(`/api/userPosts?` + querystring.stringify({ 'user_id': user_id })).then(res => {
+    axios.get(URL + `api/userPosts?` + querystring.stringify({ 'user_id': user_id })).then(res => {
         dispatch({
             type: GET_POSTS,
             payload: res.data
@@ -21,8 +21,24 @@ export const getPosts = (user_id) => dispatch => {
     });
 }
 
+export const getUserBank = (user_id) => dispatch => {
+    if (user_id === undefined)
+        dispatch({
+            type: GET_USER_BANK,
+            payload: []
+        })
+    axios.get(URL + `api/userPosts?` + querystring.stringify({ 'user_id': user_id })).then(res => {
+        dispatch({
+            type: GET_USER_BANK,
+            payload: res.data
+        })
+    }).catch((err) => {
+        console.log(err)
+    });
+}
+
 export const getUsers = () => dispatch => {
-    axios.get(`api/vkUsers`).then(res => {
+    axios.get(URL + `api/vkUsers`).then(res => {
         dispatch({
             type: GET_USERS,
             payload: res.data
@@ -32,9 +48,64 @@ export const getUsers = () => dispatch => {
     })
 }
 
+export const getUserByVkId = (id) => dispatch => {
+    const data = { id: id }
+    axios.get(URL + `api/getUserByVkId`, { headers: data }).then(res => {
+        dispatch({
+            type: GET_USER_BY_VK_ID,
+            payload: res.data
+        })
+    })
+}
+
+export const getPostById = (post_id) => dispatch => {
+    const data = { id: post_id }
+    axios.get(URL + `api/getPostById`, { headers: data }).then(res => {
+        dispatch({
+            type: GET_POST,
+            payload: res.data
+        })
+    })
+}
+
+export const getPostComments = (post_id) => dispatch => {
+    const data = { id: post_id }
+    axios.get(URL + `api/getPostComments`, { headers: data }).then(res => {
+        dispatch({
+            type: GET_POST_COMMENTS,
+            payload: res.data
+        })
+    })
+}
+
+export const purge = () => dispatch => {
+    dispatch({
+        type: PURGE_POSTS
+    })
+}
+
+export const addComment = (comment, post_id, user) => dispatch => {
+    const body = { post_id: post_id, user_id: user.id, user_img: user.img, user_name: user.name, comment: comment }
+    axios.post(URL + `api/comments/`, body).then(res => {
+        dispatch({
+            type: ADD_COMMENT,
+            payload: res.data
+        })
+    })
+}
+
+export const deleteComment = (id, post_id) => dispatch => {
+    axios.delete(URL + `api/comments/${id}/`).then(res => {
+        dispatch({
+            type: DELETE_COMMENT,
+            payload: { id: id, post_id: post_id }
+        })
+    })
+}
+
 export const addUserPermission = (owner_id, viewer_id, user) => dispatch => {
     const body = { owner_id: owner_id, viewer_id: viewer_id }
-    axios.post(`api/vkPermissions/`, body).then(res => {
+    axios.post(URL + `api/vkPermissions/`, body).then(res => {
         const new_user = { 'id': res.data.id, 'user_name': user.user_name, 'user_id': user.user_id, 'user_img': user.user_img }
         dispatch({
             type: ADD_USER_PERMISSION,
@@ -46,7 +117,7 @@ export const addUserPermission = (owner_id, viewer_id, user) => dispatch => {
 }
 
 export const removeUserPermission = (id) => dispatch => {
-    axios.delete(`api/vkPermissions/${id}/`).then(res => {
+    axios.delete(URL + `api/vkPermissions/${id}/`).then(res => {
         dispatch({
             type: REMOVE_USER_PERMISSION,
             payload: id
@@ -56,7 +127,7 @@ export const removeUserPermission = (id) => dispatch => {
 
 export const getPermissions = (user_id) => dispatch => {
     var body = { id: user_id }
-    axios.get(`api/vkUserPermissions`, { headers: body }).then(res => {
+    axios.get(URL + `api/vkUserPermissions`, { headers: body }).then(res => {
         console.log(res.data)
         dispatch({
             type: GET_PERMISSIONS,
@@ -85,7 +156,7 @@ export const renderPost = (id, user_id, access_token) => dispatch => {
             attachments: JSON.stringify(wall_data.attachments)
         }
 
-        axios.post(`/api/posts/`, obj).then(res => {
+        axios.post(URL + `api/posts/`, obj).then(res => {
             dispatch({
                 type: ADD_POST,
                 payload: res.data
@@ -138,7 +209,7 @@ export const renderPost = (id, user_id, access_token) => dispatch => {
 }
 
 export const deletePost = (id) => dispatch => {
-    axios.delete(`/api/posts/${id}/`).then(res => {
+    axios.delete(URL + `api/posts/${id}/`).then(res => {
         dispatch({
             type: REMOVE_POST,
             payload: id

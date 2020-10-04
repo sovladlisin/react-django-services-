@@ -10,6 +10,9 @@ import { configureStore } from './store';
 import ServiceList from "./components/ServiceList";
 import { PersistGate } from "redux-persist/integration/react";
 import UserMenu from "./components/UserMenu";
+import PostViewer from "./think_bank/PostViewer";
+import Alert from "./components/Alert";
+import UserBank from "./think_bank/UserBank";
 class App extends Component {
 
   render() {
@@ -20,10 +23,17 @@ class App extends Component {
         <PersistGate loading={null} persistor={persistor}>
           <Router>
             <UserMenu />
+            <Alert />
             <Switch>
               <Route exact path="/" component={Home} />
               <Route exact path="/service-list" component={ServiceList} />
               <Route exact path="/think-bank" component={Workspace_TB} />
+              <Route
+                exact path="/post/:user/:id"
+                render={(props) => <PostViewer {...props} />} />
+              <Route
+                exact path="/userbank/:user/"
+                render={(props) => <UserBank {...props} />} />
             </Switch>
           </Router>
         </PersistGate>

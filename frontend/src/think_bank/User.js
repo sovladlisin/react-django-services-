@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { addUserPermission, removeUserPermission } from '../actions/think_bank/posts'
+import { URL } from '../actions/types';
 
 export class User extends Component {
 
@@ -15,7 +16,6 @@ export class User extends Component {
     }
 
     addPerm = () => {
-        console.log('..')
         this.props.addUserPermission(this.props.user.id, this.props.selected_user.user_id, this.props.selected_user)
     }
 
@@ -45,8 +45,9 @@ export class User extends Component {
                 </div>
                 <div className='user-actions'>
                     {this.renderButton()}
+                    <a target="_blank" rel="noopener noreferrer" href={URL + "userbank/" + this.props.selected_user.user_id + "/"}><button id='bank-link'>Банк пользователя</button></a>
                 </div>
-            </div>
+            </div >
         )
     }
 }
