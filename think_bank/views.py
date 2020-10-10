@@ -13,9 +13,9 @@ def Bot(request):
         print('INEEDHELP')
         print('Post: "%s"' % request.POST)
         print('Body: "%s"' % request.body)
-        print('Body: "%s"' % request.body['type'])
-        print('Body: "%s"' % request.body[0]['type'])
-        print('Body: "%s"' % request.body[0]['type'])
+        # print('Body: "%s"' % request.body['type'])
+        # print('Body: "%s"' % request.body[0]['type'])
+        # print('Body: "%s"' % request.body[0]['type'])
         print(json.loads(request.body))
         print(json.loads(request.body)['type'])
 
