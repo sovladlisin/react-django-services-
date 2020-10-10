@@ -9,6 +9,7 @@ from django.http import StreamingHttpResponse, HttpResponseRedirect, HttpRespons
 @csrf_exempt
 def Bot(request):
     if request.method == 'POST':
+        print(request.POST.get('type'))
         print('INEEDHELP')
         return HttpResponse("dcf1fa33")
     print(request)
