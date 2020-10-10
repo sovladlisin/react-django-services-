@@ -11,6 +11,8 @@ def Bot(request):
     if request.method == 'POST':
         print(request.POST.get('type'))
         print('INEEDHELP')
+        print('Post: "%s"' % request.POST)
+        print('Body: "%s"' % request.body)
         return HttpResponse("dcf1fa33")
     print(request)
     print('IAMRETARDED')
