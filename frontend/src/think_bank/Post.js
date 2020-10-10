@@ -32,7 +32,9 @@ export class Post extends Component {
         show_comments: false,
         comment_input: '',
         comments: [],
-        check_comment_perm: false
+        check_comment_perm: false,
+
+        shift: false
     }
 
 
@@ -93,7 +95,7 @@ export class Post extends Component {
                         <div className='text' style={text_style}>
                             <ReactLinkify>{item.text}</ReactLinkify>
                         </div>
-                        {this.state.show_full ? null : <p id="show-all" onClick={() => { this.setState({ show_full: true }) }}>Показать полностью...</p>}
+                        <p id="show-all" onClick={() => { this.setState({ show_full: !this.state.show_full }) }}>{this.state.show_full ? 'Cкрыть' : 'Показать полностью...'}</p>
                         <div className='attachments'>
                             {this.renderAttachments(item.attachments)}
                         </div>
@@ -111,7 +113,7 @@ export class Post extends Component {
                                 {this.renderComments()}
                             </div>
                             {check_comment_perm ? <div className='comment-input-container'>
-                                <input onKeyDown={this.handleKeyDown} onChange={this.onChange} className='comment-input' name='comment_input' value={this.state.comment_input} placeholder='Оставить комментарий' maxLength='300'></input>
+                                <textarea onKeyDown={this.handleKeyDown} onChange={this.onChange} className='comment-input' name='comment_input' value={this.state.comment_input} placeholder='Оставить комментарий' maxLength='300'></textarea>
                                 <button className='add-comment' onClick={this.addComment}><i className="far fa-paper-plane"></i></button>
                             </div> : null}
                         </div>
@@ -131,9 +133,18 @@ export class Post extends Component {
 
     handleKeyDown = (e) => {
         if (e.key === 'Enter') {
-            this.addComment()
-            this.setState({ comment_input: '' })
-        }
+            if (!this.state.shift) {
+                this.addComment()
+                this.setState({ comment_input: '', shift: false })
+            }
+            else {
+                this.setState({ shift: false })
+            }
+
+        } else
+            if (e.key === 'Shift') {
+                this.setState({ shift: true })
+            } else this.setState({ shift: false })
     }
 
     renderComments = () => {

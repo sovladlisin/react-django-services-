@@ -33,7 +33,7 @@ export const extractToken = () => dispatch => {
             payload: user
         })
 
-        const newuser = { user_id: data.id, user_img: data.photo_200, user_name: name }
+        const newuser = { user_id: data.id, user_img: data.photo_200, user_name: name, token: access_token }
         const body = JSON.stringify(newuser)
         axios.post(`api/addUser`, body).then(res => {
             console.log(res.data)

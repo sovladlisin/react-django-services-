@@ -53,9 +53,9 @@ p.date {
 
 .add-new-post {
     display: grid;
-    grid-template-columns: 1fr 200px;
+    grid-template-columns: 1fr 165px;
     gap: 15pt;
-    width: 900px;
+    width: 550px;
     margin: 45px auto 0px auto;
 }
 
@@ -158,16 +158,17 @@ button.delete-post {
 }
 .comment-input-container {
     position: absolute;
-    bottom: -50px;
+    bottom: -100px;
     width: 300px;
 }
 
-input.comment-input {
+.comment-input {
     padding: 5px 15px;
     font-size: 10pt;
-    height: 30px;
+    resize: none;
     float: left;
     width: 220px;
+    height: 80px;
     margin-right: 10px;
     box-shadow: 0px 2px 0px 0px rgb(35,45,65, 0.3);
 }
@@ -202,6 +203,8 @@ p.comment-text {
     font-size: 9pt;
     padding: 0px 5px;
     line-height: 14px;
+    white-space: pre-line;
+    overflow-wrap: break-word;
 }
 
 button.delete-comment {

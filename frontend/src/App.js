@@ -13,6 +13,7 @@ import UserMenu from "./components/UserMenu";
 import PostViewer from "./think_bank/PostViewer";
 import Alert from "./components/Alert";
 import UserBank from "./think_bank/UserBank";
+import Bot from "./think_bank/Bot";
 class App extends Component {
 
   render() {
@@ -34,6 +35,7 @@ class App extends Component {
               <Route
                 exact path="/userbank/:user/"
                 render={(props) => <UserBank {...props} />} />
+
             </Switch>
           </Router>
         </PersistGate>

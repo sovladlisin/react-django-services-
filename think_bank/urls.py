@@ -1,6 +1,7 @@
 from rest_framework import routers
 from .api import CommentViewSet, PostViewSet, PostByUser, getPermissions, VkUserViewSet, addUser, VkUserPermissionsViewSet, getPostById, getUserByVkId, getPostComments
 from django.urls import path
+from .views import Bot
 
 router = routers.DefaultRouter()
 router.register('api/posts', PostViewSet, 'posts')
@@ -15,4 +16,6 @@ urlpatterns = router.urls + [path(
     path('api/getPostById', getPostById, name='getPostById'),
     path('api/getUserByVkId', getUserByVkId, name='getUserByVkId'),
     path('api/getPostComments', getPostComments, name='getPostComments'),
+    path('bot/',
+         Bot, name='bot')
 ]
