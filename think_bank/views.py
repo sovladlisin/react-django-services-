@@ -13,5 +13,8 @@ def Bot(request):
         type = data['type']
         if (type == 'confirmation'):
             return HttpResponse("dcf1fa33")
+        if (type == 'message_new'):
+            print(data)
+            return HttpResponse('Success')
         return HttpResponse("dcf1fa33")
     return HttpResponse("Wrong request")
