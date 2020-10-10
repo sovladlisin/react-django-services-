@@ -6,6 +6,10 @@ from django.http import StreamingHttpResponse, HttpResponseRedirect, HttpRespons
 
 
 def Bot(request):
+    if request.method == 'POST':
+        print('INEEDHELP')
+        return HttpResponse("dcf1fa33")
+
     print(request)
     print('IAMRETARDED')
     return HttpResponse("dcf1fa33")
