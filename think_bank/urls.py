@@ -16,6 +16,6 @@ urlpatterns = router.urls + [path(
     path('api/getPostById', getPostById, name='getPostById'),
     path('api/getUserByVkId', getUserByVkId, name='getUserByVkId'),
     path('api/getPostComments', getPostComments, name='getPostComments'),
-    path('bot/',
+    path('bot',
          Bot, name='bot')
 ]
