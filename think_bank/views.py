@@ -9,17 +9,9 @@ from django.http import StreamingHttpResponse, HttpResponseRedirect, HttpRespons
 @csrf_exempt
 def Bot(request):
     if request.method == 'POST':
-        print(request.POST.get('type'))
-        print('INEEDHELP')
-        print('Post: "%s"' % request.POST)
-        print('Body: "%s"' % request.body)
-        # print('Body: "%s"' % request.body['type'])
-        # print('Body: "%s"' % request.body[0]['type'])
-        # print('Body: "%s"' % request.body[0]['type'])
-        print(json.loads(request.body))
-        print(json.loads(request.body)['type'])
-
+        data = json.loads(request.body)
+        type = data['type']
+        if (type == 'confirmation'):
+            return HttpResponse("dcf1fa33")
         return HttpResponse("dcf1fa33")
-    print(request)
-    print('IAMRETARDED')
-    return HttpResponse("dcf1fa33")
+    return HttpResponse("Wrong request")
