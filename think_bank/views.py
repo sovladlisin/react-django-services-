@@ -6,4 +6,6 @@ from django.http import StreamingHttpResponse, HttpResponseRedirect, HttpRespons
 
 
 def Bot(request):
+    print(request)
+    print('IAMRETARDED')
     return HttpResponse("dcf1fa33")
