@@ -12,9 +12,9 @@ def Bot(request):
         data = json.loads(request.body)
         type = data['type']
         if (type == 'confirmation'):
-            return HttpResponse("dcf1fa33")
+            return HttpResponse("a6d0d81e")
         if (type == 'message_new'):
             print(data)
             return HttpResponse('Success')
-        return HttpResponse("dcf1fa33")
+        return HttpResponse("a6d0d81e")
     return HttpResponse("Wrong request")
