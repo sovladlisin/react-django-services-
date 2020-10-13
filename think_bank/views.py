@@ -6,6 +6,7 @@ from django.http import StreamingHttpResponse, HttpResponseRedirect, HttpRespons
 from .api import add_post_to_db, vk_request
 # Create your views here.
 key = 'test_key_2138573p9148'
+community_token = 'cd4bb7c9e5628b5c7d513f91cc4bc20f0adf5bcdafcca02009f00aa092088ec7e8cabd78eb7e2959f6949'
 
 
 @csrf_exempt
@@ -31,7 +32,7 @@ def Bot(request):
                     post_id = text
                     add_post_to_db(False, post_id, user.pk, None)
                     answer = vk_request('get', 'messages.send', {
-                        'peer_id': user_id, 'message': 'test'}, key)
+                        'peer_id': user_id, 'message': 'test'}, community_token)
                     print(answer)
                 return HttpResponse('ok', content_type="text/plain", status=200)
             return HttpResponse('ok', content_type="text/plain", status=200)
