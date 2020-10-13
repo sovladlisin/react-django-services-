@@ -161,6 +161,7 @@ def addPost(request):
         user = VkUser.objects.all().get(pk=user_id)
 
         wall_data = vk_request('get', 'wall.getById', {'posts': post_id}, user)
+        print(wall_data)
         if post_id[0] == '-':
             owner = vk_request('get', 'groups.getById', {
                                'group_ids': int(wall_data['owner_id']) * -1}, user)
@@ -171,6 +172,7 @@ def addPost(request):
                                'user_ids': wall_data['owner_id'], 'fields': 'photo_50'}, user)
             owner_name = owner['first_name'] + owner['last_name']
             owner_photo = owner['photo_50']
+        print(owner)
 
         new_post = Post(user=user,
                         post_id=post_id,
