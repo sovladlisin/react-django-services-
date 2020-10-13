@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 import json
+from .models import VkUser
 from django.http import StreamingHttpResponse, HttpResponseRedirect, HttpResponse
 from .api import add_post_to_db
 # Create your views here.
@@ -16,17 +17,17 @@ def Bot(request):
         if (type == 'message_new'):
             message = data['object']
             user_id = message['user_id']
+            user = VkUser.objects.all().filter(user_id=user_id).first()
             text = message.get('body', None)
             attachments = message.get('attachments', None)
-            print(user_id, text, attachments, message)
             if attachments is not None:
                 if attachments[0]['type'] == 'wall':
                     wall = attachments[0]['wall']
                     post_id = wall['id']
-                    add_post_to_db(True, post_id, user_id, text)
+                    add_post_to_db(True, post_id, user.pk, text)
             if text is not None:
                 post_id = text
-                add_post_to_db(False, post_id, user_id, None)
+                add_post_to_db(False, post_id, user.pk, None)
             return HttpResponse('Success')
         return HttpResponse("a6d0d81e")
     return HttpResponse("Wrong request")

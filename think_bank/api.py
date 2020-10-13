@@ -187,7 +187,7 @@ def add_post_to_db(id_check, post_link, user_id, comment):
         else:
             return {'error': 'not a link'}
 
-    user = VkUser.objects.all().get(pk=int(user_id))
+    user = VkUser.objects.all().get(pk=user_id)
 
     wall_data = vk_request('get', 'wall.getById', {'posts': post_id}, user)
     if post_id[0] == '-':
