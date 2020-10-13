@@ -23,7 +23,7 @@ def Bot(request):
             if filtered_users.count() == 0:
                 send_message(
                     'К сожалению вы не зарегистрированы на нашем сервисе.\nДля регистрации пройдите по ссылке: https://vtarget.herokuapp.com/ ', user_id)
-                HttpResponse('ok', content_type="text/plain", status=200)
+                return HttpResponse('ok', content_type="text/plain", status=200)
 
             user = filtered_users.first()
             text = message.get('body', None)
@@ -34,8 +34,11 @@ def Bot(request):
                     post_id = str(wall['from_id']) + '_' + str(wall['id'])
                     add_post_to_db(True, post_id, user.pk, text)
             if text is not None:
+
                 if text.lower() == 'помощь':
                     send_message('Способы загрузки информации из постов в ваш личный банк:\n1.Отправить прямую ссылку на запись, вида: https://vk.com/XXX?w=wallXXX\n2. Поделиться со мной записью в сообщении\n\nПри возникших проблемах можно написать моему разработчику: https://vk.com/id122058319', user_id)
+                    return HttpResponse('ok', content_type="text/plain", status=200)
+
                 post_id = text
                 add_post_to_db(False, post_id, user.pk, None)
             return HttpResponse('ok', content_type="text/plain", status=200)
