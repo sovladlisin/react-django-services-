@@ -16,8 +16,8 @@ def Bot(request):
         if (type == 'message_new'):
             message = data['object']
             user_id = message['user_id']
-            post = message['data']
-            print(user_id, post)
+            # post = message['data']
+            print(user_id, message)
             return HttpResponse('Success')
         return HttpResponse("a6d0d81e")
     return HttpResponse("Wrong request")
