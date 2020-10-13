@@ -96,7 +96,7 @@ export class Post extends Component {
                         </div>
                         <p id="show-all" onClick={() => { this.setState({ show_full: !this.state.show_full }) }}>{this.state.show_full ? 'Cкрыть' : 'Показать полностью...'}</p>
                         <div className='attachments'>
-                            {this.renderAttachments(item.attachments)}
+                            {this.renderAttachments(item.attachments, item)}
                         </div>
                     </div>
 
@@ -167,9 +167,10 @@ export class Post extends Component {
         })
     }
 
-    renderAttachments = (attachments) => {
+    renderAttachments = (attachments, item) => {
         if (attachments != 'Не указано') {
             const data = JSON.parse(attachments)
+            console.log(data)
             return data.map(item => {
                 switch (item.type) {
                     case 'doc':

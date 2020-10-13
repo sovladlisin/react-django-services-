@@ -163,9 +163,9 @@ def addPost(request):
     return HttpResponse('Wrong request')
 
 
-def vk_request(type, name, params, token):
+def vk_request(type, name, params, token, v):
     params['access_token'] = token
-    params['v'] = '5.45'
+    params['v'] = v
 
     if type == 'get':
         r = requests.get('https://api.vk.com/method/' + name, params)
@@ -193,15 +193,15 @@ def add_post_to_db(id_check, post_link, user_id, comment):
             return {'error': 'not a link'}
 
     wall_data = vk_request('get', 'wall.getById', {
-                           'posts': post_id}, user.token)['response'][0]
+                           'posts': post_id}, user.token, '5.124')['response'][0]
     if post_id[0] == '-':
         owner = vk_request('get', 'groups.getById', {
-                           'group_ids': int(wall_data['owner_id']) * -1}, user.token)['response'][0]
+                           'group_ids': int(wall_data['owner_id']) * -1}, user.token, '5.124')['response'][0]
         owner_name = owner['name']
         owner_photo = owner['photo_50']
     else:
         owner = vk_request('get', 'users.get', {
-                           'user_ids': wall_data['owner_id'], 'fields': 'photo_50'}, user.token)['response'][0]
+                           'user_ids': wall_data['owner_id'], 'fields': 'photo_50'}, user.token, '5.124')['response'][0]
         owner_name = owner['first_name'] + owner['last_name']
         owner_photo = owner['photo_50']
 
@@ -234,4 +234,4 @@ def send_message(message, user_id):
     community_token = 'cd4bb7c9e5628b5c7d513f91cc4bc20f0adf5bcdafcca02009f00aa092088ec7e8cabd78eb7e2959f6949'
     rand = random.randint(-32768, 32767)
     answer = vk_request('get', 'messages.send', {
-                        'peer_id': user_id, 'message': message, 'random_id ': rand}, community_token)
+                        'peer_id': user_id, 'message': message, 'random_id ': rand}, community_token, '5.124')
