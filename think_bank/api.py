@@ -1,4 +1,4 @@
-from .views import send_message
+import random
 import requests
 from django.http import StreamingHttpResponse, HttpResponseRedirect, HttpResponse
 from django.db.models import Q
@@ -189,7 +189,7 @@ def add_post_to_db(id_check, post_link, user_id, comment):
                 post_id = splitted.split('?')[0]
         else:
             send_message(
-                'Прошу прощения, я не понимаю данную ссылку. Вы можете добавлять посты исключительно из \"Вконтакте\"', user.user_id)
+                'Прошу прощения, я не понимаю данную ссылку. Вы можете добавлять посты исключительно из \"Вконтакте\". \nДля бополнительной информации напишите мне \"Помощь\".', user.user_id)
             return {'error': 'not a link'}
 
     wall_data = vk_request('get', 'wall.getById', {
@@ -228,3 +228,10 @@ def add_post_to_db(id_check, post_link, user_id, comment):
         new_comment.save()
     send_message('Ваш пост успешно сохранен!', user.user_id)
     return new_post
+
+
+def send_message(message, user_id):
+    community_token = 'cd4bb7c9e5628b5c7d513f91cc4bc20f0adf5bcdafcca02009f00aa092088ec7e8cabd78eb7e2959f6949'
+    rand = random.randint(-32768, 32767)
+    answer = vk_request('get', 'messages.send', {
+                        'peer_id': user_id, 'message': message, 'random_id ': rand}, community_token)
