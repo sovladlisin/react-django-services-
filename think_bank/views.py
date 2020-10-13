@@ -27,12 +27,10 @@ def Bot(request):
                     post_id = str(wall['from_id']) + '_' + str(wall['id'])
                     print("Запрос:::", post_id, user.pk, text)
                     add_post_to_db(True, post_id, user.pk, text)
-                    return HttpResponse('OK')
             if text is not None:
                 post_id = text
                 print("Запрос:::", post_id, user.pk, text)
                 add_post_to_db(False, post_id, user.pk, None)
-                return HttpResponse('OK')
-            return HttpResponse('OK')
-        return HttpResponse("OK")
-    return HttpResponse("OK")
+            return HttpResponse('ok', content_type="text/plain", status=200)
+        return HttpResponse('wrong')
+    return HttpResponse("wrong")
