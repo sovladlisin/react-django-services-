@@ -189,7 +189,7 @@ def add_post_to_db(id_check, post_link, user_id, comment):
                 post_id = splitted.split('?')[0]
         else:
             send_message(
-                'Прошу прощения, я не понимаю данную ссылку. \n\nВы можете добавлять посты исключительно из \"Вконтакте\". \nДля дополнительной информации напишите мне \"Помощь\".', user.user_id)
+                'Прошу прощения, я не понимаю данную ссылку. \nВы можете добавлять посты исключительно из \"Вконтакте\". \n\nДля дополнительной информации напишите мне \"Помощь\".', user.user_id)
             return {'error': 'not a link'}
 
     wall_data = vk_request('get', 'wall.getById', {
@@ -223,7 +223,7 @@ def add_post_to_db(id_check, post_link, user_id, comment):
                         'views', {'count': 0})['count'],
                     attachments=json.dumps(wall_data.get('attachments', [])))
     new_post.save()
-    if comment is not None and comment.len() > 0:
+    if comment is not None and len(comment) > 0:
         new_comment = Comment(user=user, comment=comment, post=new_post)
         new_comment.save()
     send_message('Ваш пост успешно сохранен!', user.user_id)

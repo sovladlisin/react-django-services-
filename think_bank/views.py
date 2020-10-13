@@ -36,11 +36,22 @@ def Bot(request):
             if text is not None:
 
                 if text.lower() == 'помощь':
-                    send_message('Способы загрузки информации из постов в ваш личный банк:\n1.Отправить прямую ссылку на запись, вида: https://vk.com/XXX?w=wallXXX\n2. Поделиться со мной записью в сообщении\n\nПри возникших проблемах можно написать моему разработчику: https://vk.com/id122058319', user_id)
+                    message = ''
+                    message += 'Способы загрузки информации из постов в ваш личный банк:\n'
+                    message += '1.Отправить прямую ссылку на запись, вида: https://vk.com/XXX?w=wallXXX\n2. Поделиться со мной записью в сообщении.\n\n'
+                    message += 'Для добавления комментария к сохраненной записи, достаточно указать ваш комментарий через пробел после ссылки или в виде сообщения при действии \"Поделиться записью\".\n\n'
+                    message += 'Информация, сохраняемая в ваш банк из прикрепленной записи: текст, изображения, документы.\n'
+                    message += 'При удалении оригинального поста - будут удалены изображения и документы.\n\n'
+                    message += 'При возникших проблемах можно написать моему разработчику: https://vk.com/id122058319'
+                    send_message(message, user_id)
                     return HttpResponse('ok', content_type="text/plain", status=200)
 
-                post_id = text
-                add_post_to_db(False, post_id, user.pk, None)
+                split = text.split(' ')
+                if (len(split) > 1):
+                    add_post_to_db(False, split[0], user.pk, split[1])
+                else:
+                    add_post_to_db(False, split[0], user.pk, None)
+
             return HttpResponse('ok', content_type="text/plain", status=200)
         return HttpResponse('ok', content_type="text/plain", status=200)
     return HttpResponse('ok', content_type="text/plain", status=200)
