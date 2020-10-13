@@ -18,7 +18,14 @@ def Bot(request):
         if (type == 'message_new'):
             message = data['object']
             user_id = message['user_id']
-            user = VkUser.objects.all().filter(user_id=user_id).first()
+
+            filtered_users = VkUser.objects.all().filter(user_id=user_id)
+            if filtered_users.count() == 0:
+                send_message(
+                    'К сожалению вы не зарегистрированы на нашем сервисе.\nДля регистрации пройдите по ссылке: https://vtarget.herokuapp.com/ ', user_id)
+                HttpResponse('ok', content_type="text/plain", status=200)
+
+            user = filtered_users.first()
             text = message.get('body', None)
             attachments = message.get('attachments', None)
             if attachments is not None:
