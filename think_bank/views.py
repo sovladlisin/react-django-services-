@@ -4,6 +4,7 @@ import json
 from .models import VkUser
 from django.http import StreamingHttpResponse, HttpResponseRedirect, HttpResponse
 from .api import add_post_to_db, vk_request
+import random
 # Create your views here.
 key = 'test_key_2138573p9148'
 community_token = 'cd4bb7c9e5628b5c7d513f91cc4bc20f0adf5bcdafcca02009f00aa092088ec7e8cabd78eb7e2959f6949'
@@ -31,9 +32,14 @@ def Bot(request):
                 if text is not None:
                     post_id = text
                     add_post_to_db(False, post_id, user.pk, None)
-                    answer = vk_request('get', 'messages.send', {
-                        'peer_id': user_id, 'message': 'test'}, community_token)
-                    print(answer)
+                    send_message('Привет :3', user_id)
                 return HttpResponse('ok', content_type="text/plain", status=200)
             return HttpResponse('ok', content_type="text/plain", status=200)
     return HttpResponse('ok', content_type="text/plain", status=200)
+
+
+def send_message(message, user_id):
+    rand = random.randint(-32768, 32767)
+    answer = vk_request('get', 'messages.send', {
+                        'peer_id': user_id, 'message': message, 'random_id ': rand}, community_token)
+    print(answer)
