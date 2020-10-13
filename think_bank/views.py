@@ -18,6 +18,7 @@ def Bot(request):
             user_id = message['user_id']
             text = message.get('body', None)
             attachments = message.get('attachments', None)
+            print(user_id, text, attachments, message)
             if attachments is not None:
                 if attachments[0]['type'] == 'wall':
                     wall = attachments[0]['wall']
