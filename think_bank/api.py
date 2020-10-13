@@ -169,7 +169,7 @@ def vk_request(type, name, params, user):
     if type == 'get':
         r = requests.get('https://api.vk.com/method/' + name, params)
         result = json.loads(r.content.decode('utf-8'))
-        return result['response'][0]
+        return result
 
 
 def add_post_to_db(id_check, post_link, user_id, comment):
@@ -189,15 +189,16 @@ def add_post_to_db(id_check, post_link, user_id, comment):
 
     user = VkUser.objects.all().get(pk=user_id)
 
-    wall_data = vk_request('get', 'wall.getById', {'posts': post_id}, user)
+    wall_data = vk_request('get', 'wall.getById', {
+                           'posts': post_id}, user)['response'][0]
     if post_id[0] == '-':
         owner = vk_request('get', 'groups.getById', {
-                           'group_ids': int(wall_data['owner_id']) * -1}, user)
+                           'group_ids': int(wall_data['owner_id']) * -1}, user)['response'][0]
         owner_name = owner['name']
         owner_photo = owner['photo_50']
     else:
         owner = vk_request('get', 'users.get', {
-                           'user_ids': wall_data['owner_id'], 'fields': 'photo_50'}, user)
+                           'user_ids': wall_data['owner_id'], 'fields': 'photo_50'}, user)['response'][0]
         owner_name = owner['first_name'] + owner['last_name']
         owner_photo = owner['photo_50']
 
@@ -220,7 +221,7 @@ def add_post_to_db(id_check, post_link, user_id, comment):
                     attachments=json.dumps(wall_data.get('attachments', [])))
     print(model_to_dict(new_post))
     new_post.save()
-    if comment is not None:
+    if comment is not None and comment.len() > 0:
         new_comment = Comment(user=user, comment=comment, post=new_post)
         new_comment.save()
     return new_post
