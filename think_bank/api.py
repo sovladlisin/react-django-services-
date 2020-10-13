@@ -191,6 +191,7 @@ def addPost(request):
                         views_count=wall_data.get(
                             'views', {'count': 0})['count'],
                         attachments=json.dumps(wall_data.get('attachments', [])))
+        print(model_to_dict(new_post))
         new_post.save()
         return JsonResponse(model_to_dict(new_post), safe=False)
     return HttpResponse('Wrong request')
