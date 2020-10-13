@@ -155,44 +155,9 @@ def getPostComments(request):
 def addPost(request):
     if request.method == 'POST':
         user = json.loads(request.body.decode('utf-8'))
-        post_id = user.get('post_id', None)
+        post_link = user.get('post_link', None)
         user_id = user.get('user_id', None)
-
-        user = VkUser.objects.all().get(pk=user_id)
-
-        wall_data = vk_request('get', 'wall.getById', {'posts': post_id}, user)
-        print(wall_data)
-        if post_id[0] == '-':
-            owner = vk_request('get', 'groups.getById', {
-                               'group_ids': int(wall_data['owner_id']) * -1}, user)
-            owner_name = owner['name']
-            owner_photo = owner['photo_50']
-        else:
-            owner = vk_request('get', 'users.get', {
-                               'user_ids': wall_data['owner_id'], 'fields': 'photo_50'}, user)
-            owner_name = owner['first_name'] + owner['last_name']
-            owner_photo = owner['photo_50']
-        print(owner)
-
-        new_post = Post(user=user,
-                        post_id=post_id,
-                        owner_id=wall_data['owner_id'],
-                        owner_name=owner_name,
-                        owner_img_link=owner_photo,
-                        from_id=wall_data['from_id'],
-                        date=wall_data['date'],
-                        text=wall_data['text'],
-                        comments_count=wall_data.get(
-                            'comments', {'count': 0})['count'],
-                        likes_count=wall_data.get(
-                            'likes', {'count': 0})['count'],
-                        reposts_count=wall_data.get(
-                            'reposts', {'count': 0})['count'],
-                        views_count=wall_data.get(
-                            'views', {'count': 0})['count'],
-                        attachments=json.dumps(wall_data.get('attachments', [])))
-        print(model_to_dict(new_post))
-        new_post.save()
+        new_post = add_post_to_db(False, post_link, user_id, None)
         return JsonResponse(model_to_dict(new_post), safe=False)
     return HttpResponse('Wrong request')
 
@@ -205,3 +170,57 @@ def vk_request(type, name, params, user):
         r = requests.get('https://api.vk.com/method/' + name, params)
         result = json.loads(r.content.decode('utf-8'))
         return result['response'][0]
+
+
+def add_post_to_db(id_check, post_link, user_id, comment):
+    if id_check:
+        post_id = post_link
+    else:
+        if 'wall' in post_link:
+            if '-' in post_link:
+                splitted = post_link.split('-')
+                post_id = splitted[1]
+                post_id = "-" + post_id
+            else:
+                splitted = post_link.split('wall')[1]
+                post_id = splitted.split('?')[0]
+        else:
+            return {'error': 'not a link'}
+
+    user = VkUser.objects.all().get(pk=user_id)
+
+    wall_data = vk_request('get', 'wall.getById', {'posts': post_id}, user)
+    if post_id[0] == '-':
+        owner = vk_request('get', 'groups.getById', {
+                           'group_ids': int(wall_data['owner_id']) * -1}, user)
+        owner_name = owner['name']
+        owner_photo = owner['photo_50']
+    else:
+        owner = vk_request('get', 'users.get', {
+                           'user_ids': wall_data['owner_id'], 'fields': 'photo_50'}, user)
+        owner_name = owner['first_name'] + owner['last_name']
+        owner_photo = owner['photo_50']
+
+    new_post = Post(user=user,
+                    post_id=post_id,
+                    owner_id=wall_data['owner_id'],
+                    owner_name=owner_name,
+                    owner_img_link=owner_photo,
+                    from_id=wall_data['from_id'],
+                    date=wall_data['date'],
+                    text=wall_data['text'],
+                    comments_count=wall_data.get(
+                        'comments', {'count': 0})['count'],
+                    likes_count=wall_data.get(
+                        'likes', {'count': 0})['count'],
+                    reposts_count=wall_data.get(
+                        'reposts', {'count': 0})['count'],
+                    views_count=wall_data.get(
+                        'views', {'count': 0})['count'],
+                    attachments=json.dumps(wall_data.get('attachments', [])))
+    print(model_to_dict(new_post))
+    new_post.save()
+    if comment is not None:
+        new_comment = Comment(user=user, comment=comment, post=new_post)
+        new_comment.save()
+    return new_post

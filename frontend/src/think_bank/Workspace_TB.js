@@ -60,21 +60,10 @@ export class Workspace_TB extends Component {
         document.getElementById('post_input').value = "";
 
         const user_id = this.props.user.id
-        const token = this.props.user.access_token
-
         var post_link = this.state.post_link
-        if (post_link.indexOf('-') > 0) {
-            const post_id = post_link.split('-')[1]
-            this.props.renderPost("-" + post_id, user_id, token)
-        }
-        else {
-            if (post_link.indexOf('wall') > 0) {
-                var step = post_link.split('wall')[1]
-                const post_id = step.split('?')[0]
-                this.props.renderPost(post_id, user_id, token)
-            }
-            else alert('Данная ссылка не ведет на пост')
-        }
+
+        if (post_link.indexOf('wall') > 0) this.props.renderPost(post_link, user_id)
+        else alert('Данная ссылка не ведет на пост')
     }
 
 

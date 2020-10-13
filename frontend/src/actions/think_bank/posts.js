@@ -137,8 +137,8 @@ export const getPermissions = (user_id) => dispatch => {
     })
 }
 
-export const renderPost = (id, user_id) => dispatch => {
-    const body = { user_id: user_id, post_id: id }
+export const renderPost = (post_link, user_id) => dispatch => {
+    const body = { user_id: user_id, post_link: post_link }
     axios.post(URL + `api/addPost`, JSON.stringify(body)).then(res => {
         dispatch({
             type: ADD_POST,
