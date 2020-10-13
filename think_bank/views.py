@@ -31,6 +31,6 @@ def Bot(request):
                 post_id = text
                 print("Запрос:::", post_id, user.pk, text)
                 add_post_to_db(False, post_id, user.pk, None)
-            return HttpResponse('Success')
-        return HttpResponse("a6d0d81e")
+            return HttpResponse('ok')
+        return HttpResponse("ok")
     return HttpResponse("Wrong request")
