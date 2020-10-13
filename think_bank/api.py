@@ -234,4 +234,5 @@ def send_message(message, user_id):
     community_token = 'cd4bb7c9e5628b5c7d513f91cc4bc20f0adf5bcdafcca02009f00aa092088ec7e8cabd78eb7e2959f6949'
     rand = random.randint(-32768, 32767)
     answer = vk_request('get', 'messages.send', {
-                        'peer_id': user_id, 'message': message, 'random_id ': rand}, community_token, '5.124')
+                        'peer_id': user_id, 'message': message, 'random_id ': rand}, community_token, '5.45')
+    print(answer)
