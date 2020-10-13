@@ -180,6 +180,8 @@ def add_post_to_db(id_check, post_link, user_id, comment):
             if '-' in post_link:
                 splitted = post_link.split('-')
                 post_id = splitted[1]
+                if '%' in post_id:
+                    post_id = post_id.split('%')[0]
                 post_id = "-" + post_id
             else:
                 splitted = post_link.split('wall')[1]
