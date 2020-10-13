@@ -164,7 +164,7 @@ def addPost(request):
 
 def vk_request(type, name, params, token):
     params['access_token'] = token
-    params['v'] = '5.122'
+    params['v'] = '5.45'
 
     if type == 'get':
         r = requests.get('https://api.vk.com/method/' + name, params)
