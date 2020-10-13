@@ -24,7 +24,7 @@ def Bot(request):
                 if attachments[0]['type'] == 'wall':
                     wall = attachments[0]['wall']
                     print(wall)
-                    post_id = str(wall['owner_id']) + '_' + str(wall['id'])
+                    post_id = str(wall['from_id']) + '_' + str(wall['id'])
                     print("Запрос:::", post_id, user.pk, text)
                     add_post_to_db(True, post_id, user.pk, text)
             if text is not None:
