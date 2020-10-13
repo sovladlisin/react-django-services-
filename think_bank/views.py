@@ -15,6 +15,7 @@ def Bot(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         type = data['type']
+        print(data)
         if data['secret'] == key:
             if (type == 'confirmation'):
                 return HttpResponse("a6d0d81e")
