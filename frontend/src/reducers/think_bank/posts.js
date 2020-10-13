@@ -1,4 +1,4 @@
-import { ADD_COMMENT, ADD_POST, ADD_USER_PERMISSION, DELETE_COMMENT, GET_PERMISSIONS, GET_POST, GET_POSTS, GET_POST_COMMENTS, GET_USERS, GET_USER_BANK, GET_USER_BY_VK_ID, PURGE_POSTS, REMOVE_POST, REMOVE_USER_PERMISSION } from "../../actions/types";
+import { ADD_COMMENT, ADD_POST, ADD_USER_PERMISSION, DELETE_COMMENT, GET_PERMISSIONS, GET_POST, GET_POSTS, GET_POST_COMMENTS, GET_USER, GET_USERS, GET_USER_BANK, GET_USER_BY_VK_ID, PURGE_POSTS, REMOVE_POST, REMOVE_USER_PERMISSION } from "../../actions/types";
 
 const initialState = {
     all: [],
@@ -10,7 +10,8 @@ const initialState = {
     user_by_vk_id: {},
     comments: {},
 
-    user_bank: []
+    user_bank: [],
+    selected_user: {}
 }
 
 export default function (state = initialState, action) {
@@ -28,6 +29,12 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 comments: new_comments
+            }
+
+        case GET_USER:
+            return {
+                ...state,
+                selected_user: action.payload
             }
 
         case DELETE_COMMENT:
@@ -116,11 +123,14 @@ export default function (state = initialState, action) {
             }
 
         case ADD_USER_PERMISSION:
-            var added_viewers = state.permissions.viewers
+            var perms = { ...state.permissions }
+            var added_viewers = perms.viewers
             added_viewers.push(action.payload)
+            perms.viewers = added_viewers
+            console.log(perms)
             return {
                 ...state,
-                permissions: { owners: state.permissions.owners, viewers: added_viewers }
+                permissions: perms
             }
 
         case REMOVE_USER_PERMISSION:

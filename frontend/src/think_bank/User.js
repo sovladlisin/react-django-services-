@@ -16,18 +16,18 @@ export class User extends Component {
     }
 
     addPerm = () => {
-        this.props.addUserPermission(this.props.user.id, this.props.selected_user.user_id, this.props.selected_user)
+        this.props.addUserPermission(this.props.user.id, this.props.selected_user.id, this.props.selected_user)
     }
 
     removePerm = () => {
         var id = null
-        this.props.permissions.viewers.map(item => { if (item.user_id === this.props.selected_user.user_id) id = item.id })
+        this.props.permissions.viewers.map(item => { if (item.user_id === this.props.selected_user.id) id = item.id })
         this.props.removeUserPermission(id)
     }
 
     renderButton = () => {
         var id = -1
-        this.props.permissions.viewers.map(item => { if (item.user_id === this.props.selected_user.user_id) id = item.id })
+        this.props.permissions.viewers.map(item => { if (item.user_id === this.props.selected_user.id) id = item.id })
         if (id === -1) return (<button id='add-restriction' onClick={this.addPerm}>Разрешить комментирование</button>)
         return (<button id='remove-restriction' onClick={this.removePerm}>Запретить комментирование</button>)
     }
@@ -45,7 +45,7 @@ export class User extends Component {
                 </div>
                 <div className='user-actions'>
                     {this.renderButton()}
-                    <a target="_blank" rel="noopener noreferrer" href={URL + "userbank/" + this.props.selected_user.user_id + "/"}><button id='bank-link'>Банк пользователя</button></a>
+                    <a target="_blank" rel="noopener noreferrer" href={URL + "userbank/" + this.props.selected_user.id + "/"}><button id='bank-link'>Банк пользователя</button></a>
                 </div>
             </div >
         )

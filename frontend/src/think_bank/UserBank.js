@@ -32,7 +32,7 @@ export class UserBank extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.user_bank != this.props.user_bank && this.props.user_bank.length != 0) {
-            if (this.props.user_bank[0].user_id + '' === this.state.user_id + '')
+            if (this.props.user_bank[0].user + '' === this.state.user_id + '')
                 this.setState({ posts: this.props.user_bank })
         }
     }

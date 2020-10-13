@@ -47,7 +47,7 @@ export const logout = () => dispatch => {
 }
 
 export const checkLogin = (user) => dispatch => {
-    if (user === undefined) {
+    if (user === undefined || user === {}) {
         window.location.replace(URL);
     }
 }

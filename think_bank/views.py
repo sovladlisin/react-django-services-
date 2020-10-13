@@ -47,9 +47,16 @@ def Bot(request):
                     return HttpResponse('ok', content_type="text/plain", status=200)
 
                 split = text.split(' ')
-                if (len(split) > 1):
+                if (len(split) == 2):
                     add_post_to_db(False, split[0], user.pk, split[1])
-                else:
+                if (len(split) > 2):
+                    post_link = split[0]
+                    split = split.pop(0)
+                    text = ''
+                    for i in split:
+                        text += i
+                    add_post_to_db(False, post_link, user.pk, i)
+                if (len(split) == 1):
                     add_post_to_db(False, split[0], user.pk, None)
 
             return HttpResponse('ok', content_type="text/plain", status=200)

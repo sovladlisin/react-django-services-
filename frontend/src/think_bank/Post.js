@@ -63,7 +63,6 @@ export class Post extends Component {
                 if (this.props.permissions.owners.filter(item => item.user_id === this.props.post.user).length > 0) {
                     check_comment_perm = true
                 }
-                console.log(this.props.user)
                 if (this.props.user.id === this.props.post.user) check_comment_perm = true
             }
             this.setState({ check_comment_perm: check_comment_perm })

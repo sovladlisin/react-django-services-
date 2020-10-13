@@ -48,6 +48,15 @@ export const getUsers = () => dispatch => {
     })
 }
 
+export const getUser = (id) => dispatch => {
+    axios.get(URL + `api/vkUsers/${id}`).then(res => {
+        dispatch({
+            type: GET_USER,
+            payload: res.data
+        })
+    })
+}
+
 export const getUserByVkId = (id) => dispatch => {
     const data = { id: id }
     axios.get(URL + `api/getUserByVkId`, { headers: data }).then(res => {
@@ -71,7 +80,6 @@ export const getPostById = (post_id) => dispatch => {
 export const getPostComments = (post_id) => dispatch => {
     const data = { id: post_id }
     axios.get(URL + `api/getPostComments`, { headers: data }).then(res => {
-        console.log(res)
         dispatch({
             type: GET_POST_COMMENTS,
             payload: res.data
@@ -105,9 +113,9 @@ export const deleteComment = (id, post_id) => dispatch => {
 }
 
 export const addUserPermission = (owner_id, viewer_id, user) => dispatch => {
-    const body = { owner_id: owner_id, viewer_id: viewer_id }
+    const body = { owner: owner_id, viewer: viewer_id }
     axios.post(URL + `api/vkPermissions/`, body).then(res => {
-        const new_user = { 'id': res.data.id, 'user_name': user.user_name, 'user_id': user.user_id, 'user_img': user.user_img }
+        const new_user = { 'id': res.data.id, 'user_name': user.user_name, 'user_id': user.id, 'user_img': user.user_img }
         dispatch({
             type: ADD_USER_PERMISSION,
             payload: new_user
@@ -129,7 +137,6 @@ export const removeUserPermission = (id) => dispatch => {
 export const getPermissions = (user_id) => dispatch => {
     var body = { id: user_id }
     axios.get(URL + `api/vkUserPermissions`, { headers: body }).then(res => {
-        console.log(res.data)
         dispatch({
             type: GET_PERMISSIONS,
             payload: res.data

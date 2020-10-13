@@ -50,7 +50,7 @@ export class ControlPanel extends Component {
     }
 
     renderTrustedUsers = () => {
-        const data = this.props.users.filter(item => this.state.proccessed_permissions.includes(item.user_id))
+        const data = this.props.users.filter(item => this.state.proccessed_permissions.includes(item.id))
 
         return data.map(item => {
             if (this.props.user.id != item.user_id)
@@ -80,11 +80,11 @@ export class ControlPanel extends Component {
         if (render_data.length === 0) return (<div className='user'><p>Пользователей не найдено</p></div>)
         else {
             return render_data.map(item => {
-                const user_style = this.state.proccessed_permissions.includes(item.user_id) ?
+                const user_style = this.state.proccessed_permissions.includes(item.id) ?
                     { borderColor: '#259e60' } :
                     { borderColor: '#d11f1f' }
 
-                if (this.props.user.id != item.user_id)
+                if (this.props.user.id != item.id)
                     return (
                         <div className='user' onClick={() => { this.setUserWindow(item) }}>
                             <img style={user_style} src={item.user_img}></img>
