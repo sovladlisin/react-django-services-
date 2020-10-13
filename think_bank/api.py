@@ -1,3 +1,4 @@
+from .views import send_message
 import requests
 from django.http import StreamingHttpResponse, HttpResponseRedirect, HttpResponse
 from django.db.models import Q
@@ -173,6 +174,8 @@ def vk_request(type, name, params, token):
 
 
 def add_post_to_db(id_check, post_link, user_id, comment):
+    user = VkUser.objects.all().get(pk=user_id)
+
     if id_check:
         post_id = post_link
     else:
@@ -185,9 +188,9 @@ def add_post_to_db(id_check, post_link, user_id, comment):
                 splitted = post_link.split('wall')[1]
                 post_id = splitted.split('?')[0]
         else:
+            send_message(
+                'Прошу прощения, я не понимаю данную ссылку. Вы можете добавлять посты исключительно из \"Вконтакте\"', user.user_id)
             return {'error': 'not a link'}
-
-    user = VkUser.objects.all().get(pk=user_id)
 
     wall_data = vk_request('get', 'wall.getById', {
                            'posts': post_id}, user.token)['response'][0]
@@ -219,9 +222,9 @@ def add_post_to_db(id_check, post_link, user_id, comment):
                     views_count=wall_data.get(
                         'views', {'count': 0})['count'],
                     attachments=json.dumps(wall_data.get('attachments', [])))
-    print(model_to_dict(new_post))
     new_post.save()
     if comment is not None and comment.len() > 0:
         new_comment = Comment(user=user, comment=comment, post=new_post)
         new_comment.save()
+    send_message('Ваш пост успешно сохранен!', user.user_id)
     return new_post
