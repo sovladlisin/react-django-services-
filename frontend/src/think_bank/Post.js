@@ -60,11 +60,11 @@ export class Post extends Component {
         if (prevProps.permissions != this.props.permissions) {
             if (this.props.registered) {
                 var check_comment_perm = false
-                if (this.props.permissions.owners.filter(item => item.user_id === this.props.post.user_id).length > 0) {
+                if (this.props.permissions.owners.filter(item => item.user_id === this.props.post.user).length > 0) {
                     check_comment_perm = true
                 }
                 console.log(this.props.user)
-                if (this.props.user.id === this.props.post.user_id) check_comment_perm = true
+                if (this.props.user.id === this.props.post.user) check_comment_perm = true
             }
             this.setState({ check_comment_perm: check_comment_perm })
         }
@@ -120,7 +120,7 @@ export class Post extends Component {
                         : null
                     }
                     <div className='post-control-bar'>
-                        {this.props.user.id === item.user_id ? <Fragment>
+                        {this.props.user.id === item.user ? <Fragment>
                             <button className='delete-post' title='Удалить пост' onClick={() => this.props.deletePost(item.id)}><i className="fas fa-trash-alt"></i></button>
                             <button className='share-post' title='Поделиться' onClick={() => this.copyToClipboard(`post/${this.props.user.id}/${item.id}`)}><i className="fas fa-share"></i></button>
                         </Fragment> : null}
@@ -151,7 +151,7 @@ export class Post extends Component {
         const comments = this.props.comments[this.props.post.id]
         if (comments === undefined) return null
         return comments.map(item => {
-            const check_delete_perms = this.props.post.user_id === this.props.user.id || item.user_id === this.props.user.id ? true : false
+            const check_delete_perms = this.props.post.user === this.props.user.id || item.user === this.props.user.id ? true : false
             return (
                 <div className='comment'>
                     <div className='comment-image'>

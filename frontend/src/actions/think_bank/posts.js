@@ -71,6 +71,7 @@ export const getPostById = (post_id) => dispatch => {
 export const getPostComments = (post_id) => dispatch => {
     const data = { id: post_id }
     axios.get(URL + `api/getPostComments`, { headers: data }).then(res => {
+        console.log(res)
         dispatch({
             type: GET_POST_COMMENTS,
             payload: res.data
@@ -85,11 +86,11 @@ export const purge = () => dispatch => {
 }
 
 export const addComment = (comment, post_id, user) => dispatch => {
-    const body = { post_id: post_id, user_id: user.id, user_img: user.img, user_name: user.name, comment: comment }
+    const body = { post: post_id, user: user.id, comment: comment }
     axios.post(URL + `api/comments/`, body).then(res => {
         dispatch({
             type: ADD_COMMENT,
-            payload: res.data
+            payload: { id: res.data.id, post: post_id, user: user.id, user_img: user.user_img, user_name: user.user_name, comment: comment }
         })
     })
 }
@@ -98,7 +99,7 @@ export const deleteComment = (id, post_id) => dispatch => {
     axios.delete(URL + `api/comments/${id}/`).then(res => {
         dispatch({
             type: DELETE_COMMENT,
-            payload: { id: id, post_id: post_id }
+            payload: { id: id, post: post_id }
         })
     })
 }
@@ -136,75 +137,13 @@ export const getPermissions = (user_id) => dispatch => {
     })
 }
 
-export const renderPost = (id, user_id, access_token) => dispatch => {
-
-    const post = (name, img, wall_data) => {
-        console.log(name, img, wall_data)
-        const obj = {
-            user_id: user_id,
-            post_id: wall_data.id,
-            owner_id: wall_data.owner_id,
-            owner_name: name,
-            owner_img_link: img,
-            from_id: wall_data.from_id,
-            date: wall_data.date,
-            text: wall_data.text,
-            comments_count: wall_data.comments.count,
-            likes_count: wall_data.likes.count,
-            reposts_count: wall_data.reposts.count,
-            views_count: wall_data.views === undefined ? 0 : wall_data.views.count,
-            attachments: JSON.stringify(wall_data.attachments)
-        }
-
-        axios.post(URL + `api/posts/`, obj).then(res => {
-            dispatch({
-                type: ADD_POST,
-                payload: res.data
-            })
-        }).catch((err) => {
-            console.log(err)
-        });
-    }
-
-
-
-    $.ajax({
-        url: VK_request_url('wall.getById', access_token, { posts: id }),
-        type: 'GET',
-        dataType: 'jsonp',
-        success: function (wall_data) {
-            wall_data = wall_data.response[0]
-            var name = ''
-            var img = ''
-            if (wall_data.owner_id < 0) {
-                $.ajax({
-                    url: VK_request_url('groups.getById', access_token, { group_ids: wall_data.owner_id * -1 }),
-                    type: 'GET',
-                    dataType: 'jsonp',
-                    success: function (group_data) {
-                        group_data = group_data.response[0]
-                        name = group_data.name
-                        img = group_data.photo_50
-                        post(name, img, wall_data)
-                    }
-                })
-            }
-            else {
-                $.ajax({
-                    url: VK_request_url('users.get', access_token, { user_ids: wall_data.owner_id, fields: 'photo_50' }),
-                    type: 'GET',
-                    dataType: 'jsonp',
-                    success: function (user_data) {
-                        user_data = user_data.response[0]
-                        name = user_data.first_name + ' ' + user_data.last_name
-                        img = user_data.photo_50
-                        post(name, img, wall_data)
-
-                    }
-                })
-            }
-
-        }
+export const renderPost = (id, user_id) => dispatch => {
+    const body = { user_id: user_id, post_id: id }
+    axios.post(URL + `api/addPost`, JSON.stringify(body)).then(res => {
+        dispatch({
+            type: ADD_POST,
+            payload: res.data
+        })
     })
 }
 

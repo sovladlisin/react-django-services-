@@ -27,8 +27,8 @@ export class UserMenu extends Component {
             return (
                 <Fragment>
                     <div className="user-popup" >
-                        <img src={this.props.user.img} onClick={() => { this.setState({ settings: !this.state.settings }) }}></img>
-                        <p className="user-name">{this.props.user.name}</p>
+                        <img src={this.props.user.user_img} onClick={() => { this.setState({ settings: !this.state.settings }) }}></img>
+                        <p className="user-name">{this.props.user.user_name}</p>
                     </div>
                     {this.state.settings ?
                         <div className='setting'>

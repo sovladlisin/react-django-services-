@@ -18,11 +18,11 @@ export default function (state = initialState, action) {
 
         case ADD_COMMENT:
             var new_comments = { ...state.comments }
-            if (Object.keys(new_comments).includes(action.payload.post_id + ''))
-                new_comments[action.payload.post_id] = [...new_comments[action.payload.post_id], action.payload]
+            if (Object.keys(new_comments).includes(action.payload.post + ''))
+                new_comments[action.payload.post] = [...new_comments[action.payload.post], action.payload]
             else {
-                new_comments[action.payload.post_id] = []
-                new_comments[action.payload.post_id] = [...new_comments[action.payload.post_id], action.payload]
+                new_comments[action.payload.post] = []
+                new_comments[action.payload.post] = [...new_comments[action.payload.post], action.payload]
             }
 
             return {
@@ -32,7 +32,7 @@ export default function (state = initialState, action) {
 
         case DELETE_COMMENT:
             var new_comments = { ...state.comments }
-            new_comments[action.payload.post_id] = new_comments[action.payload.post_id].filter(item => item.id != action.payload.id)
+            new_comments[action.payload.post] = new_comments[action.payload.post].filter(item => item.id != action.payload.id)
             return {
                 ...state,
                 comments: new_comments
@@ -47,18 +47,22 @@ export default function (state = initialState, action) {
             }
 
         case GET_POST_COMMENTS:
-            var id = action.payload[0].post_id
-            var new_comments = state.comments
-            if (Object.keys(new_comments).includes(id))
-                new_comments[id] = new_comments[id].concat(action.payload)
-            else {
-                new_comments[id] = []
-                new_comments[id] = new_comments[id].concat(action.payload)
+            if (action.payload.length != 0) {
+                var id = action.payload[0].post
+                var new_comments = state.comments
+                if (Object.keys(new_comments).includes(id))
+                    new_comments[id] = new_comments[id].concat(action.payload)
+                else {
+                    new_comments[id] = []
+                    new_comments[id] = new_comments[id].concat(action.payload)
+                }
+                return {
+                    ...state,
+                    comments: new_comments
+                }
             }
-            return {
-                ...state,
-                comments: new_comments
-            }
+            return { ...state }
+
 
         case GET_POSTS:
             return {

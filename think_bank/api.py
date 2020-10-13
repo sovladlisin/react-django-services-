@@ -1,3 +1,4 @@
+import requests
 from django.http import StreamingHttpResponse, HttpResponseRedirect, HttpResponse
 from django.db.models import Q
 from think_bank.models import Post, VkUserPermissions, VkUser, Comment
@@ -60,7 +61,7 @@ class PostByUser(viewsets.ModelViewSet):
         # id = request.q.get('user_id', None)
         id = self.request.query_params.get('user_id', None)
         if id is not None:
-            queryset = queryset.filter(user_id=id)
+            queryset = queryset.filter(user=id)
         return queryset
 
 
@@ -69,19 +70,21 @@ def getPermissions(request):
     if request.method == 'GET':
         id = request.headers.get('id', None)
         if id is not None:
+            temp_user = VkUser.objects.get(pk=id)
             owners = []
             viewers = []
             users = VkUser.objects.all()
-            perms = VkUserPermissions.objects.all().filter(Q(owner_id=id) | Q(viewer_id=id))
+            perms = VkUserPermissions.objects.all().filter(
+                Q(owner=temp_user) | Q(viewer=temp_user))
             for entry in perms:
-                if entry.owner_id == int(id):
-                    viewer = users.filter(user_id=entry.viewer_id).first()
+                if entry.owner == temp_user:
+                    viewer = users.get(pk=entry.viewer.pk)
                     viewers.append(
-                        {'id': entry.pk, 'user_name': viewer.user_name, 'user_id': viewer.user_id, 'user_img': viewer.user_img})
-                if entry.viewer_id == int(id):
-                    owner = users.filter(user_id=entry.owner_id).first()
+                        {'id': entry.pk, 'user_name': viewer.user_name, 'user_id': viewer.pk, 'user_img': viewer.user_img})
+                if entry.viewer == temp_user:
+                    owner = users.get(pk=entry.owner.pk)
                     owners.append(
-                        {'id': entry.pk, 'user_name': owner.user_name, 'user_id': owner.user_id, 'user_img': owner.user_img})
+                        {'id': entry.pk, 'user_name': owner.user_name, 'user_id': owner.pk, 'user_img': owner.user_img})
 
             print(owners, viewers)
             return JsonResponse({'owners': owners, 'viewers': viewers}, safe=False)
@@ -96,11 +99,14 @@ def addUser(request):
             users = VkUser.objects.all().filter(user_id=user['user_id'])
             if not users:
                 new_user = VkUser(
-                    user_id=user['user_id'], user_img=user['user_img'], user_name=user['user_name'])
+                    user_id=user['user_id'], user_img=user['user_img'], user_name=user['user_name'], token=user['token'])
                 new_user.save()
-                return HttpResponse('Success')
+                return JsonResponse(model_to_dict(new_user), safe=False)
             else:
-                return HttpResponse('Already exists')
+                old_user = users.first()
+                old_user.token = user['token']
+                old_user.save()
+                return JsonResponse(model_to_dict(old_user), safe=False)
     return HttpResponse('Wrong request')
 
 
@@ -133,12 +139,66 @@ def getPostComments(request):
         id = request.headers.get('id', None)
         if id is not None:
             result = []
-            comments = Comment.objects.all().filter(post_id=id)
+            post = Post.objects.get(pk=id)
+            comments = Comment.objects.all().filter(post=post)
             for comment in comments:
-                user = VkUser.objects.all().filter(user_id=comment.user_id).first()
-                temp = {'id': comment.pk, 'post_id': comment.post_id, 'user_id': comment.user_id,
+                user = comment.user
+                temp = {'id': comment.pk, 'post': post.pk, 'user': user.pk,
                         'user_img': user.user_img, 'user_name': user.user_name, 'comment': comment.comment}
                 result.append(temp)
             return JsonResponse(result, safe=False)
         return HttpResponse('404')
     return HttpResponse('Wrong request')
+
+
+@csrf_exempt
+def addPost(request):
+    if request.method == 'POST':
+        user = json.loads(request.body.decode('utf-8'))
+        post_id = user.get('post_id', None)
+        user_id = user.get('user_id', None)
+
+        user = VkUser.objects.all().get(pk=user_id)
+
+        wall_data = vk_request('get', 'wall.getById', {'posts': post_id}, user)
+        if post_id[0] == '-':
+            owner = vk_request('get', 'groups.getById', {
+                               'group_ids': int(wall_data['owner_id']) * -1}, user)
+            owner_name = owner['name']
+            owner_photo = owner['photo_50']
+        else:
+            owner = vk_request('get', 'users.get', {
+                               'user_ids': wall_data['owner_id'], 'fields': 'photo_50'}, user)
+            owner_name = owner['first_name'] + owner['last_name']
+            owner_photo = owner['photo_50']
+
+        new_post = Post(user=user,
+                        post_id=post_id,
+                        owner_id=wall_data['owner_id'],
+                        owner_name=owner_name,
+                        owner_img_link=owner_photo,
+                        from_id=wall_data['from_id'],
+                        date=wall_data['date'],
+                        text=wall_data['text'],
+                        comments_count=wall_data.get(
+                            'comments', {'count': 0})['count'],
+                        likes_count=wall_data.get(
+                            'likes', {'count': 0})['count'],
+                        reposts_count=wall_data.get(
+                            'reposts', {'count': 0})['count'],
+                        views_count=wall_data.get(
+                            'views', {'count': 0})['count'],
+                        attachments=json.dumps(wall_data.get('attachments', [])))
+        new_post.save()
+        return JsonResponse(model_to_dict(new_post), safe=False)
+    return HttpResponse('Wrong request')
+
+
+def vk_request(type, name, params, user):
+    params['access_token'] = user.token
+    params['v'] = '5.122'
+
+    if type == 'get':
+        r = requests.get('https://api.vk.com/method/' + name, params)
+        result = json.loads(r.content.decode('utf-8'))
+        return result['response'][0]

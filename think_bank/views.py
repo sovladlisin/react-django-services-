@@ -14,10 +14,10 @@ def Bot(request):
         if (type == 'confirmation'):
             return HttpResponse("a6d0d81e")
         if (type == 'message_new'):
-            print(data)
-
-            # user_id = data['user_id']
-            # post = data['data']
+            message = data['object']
+            user_id = message['user_id']
+            post = message['data']
+            print(user_id, post)
             return HttpResponse('Success')
         return HttpResponse("a6d0d81e")
     return HttpResponse("Wrong request")
