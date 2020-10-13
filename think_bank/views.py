@@ -33,6 +33,7 @@ def Bot(request):
                     wall = attachments[0]['wall']
                     post_id = str(wall['from_id']) + '_' + str(wall['id'])
                     add_post_to_db(True, post_id, user.pk, text)
+                    return HttpResponse('ok', content_type="text/plain", status=200)
             if text is not None:
 
                 if text.lower() == 'помощь':
