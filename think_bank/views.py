@@ -24,9 +24,11 @@ def Bot(request):
                 if attachments[0]['type'] == 'wall':
                     wall = attachments[0]['wall']
                     post_id = wall['id']
+                    print("Запрос:::", post_id, user.pk, text)
                     add_post_to_db(True, post_id, user.pk, text)
             if text is not None:
                 post_id = text
+                print("Запрос:::", post_id, user.pk, text)
                 add_post_to_db(False, post_id, user.pk, None)
             return HttpResponse('Success')
         return HttpResponse("a6d0d81e")
