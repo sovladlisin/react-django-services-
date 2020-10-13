@@ -31,7 +31,7 @@ def Bot(request):
                     post_id = text
                     add_post_to_db(False, post_id, user.pk, None)
                     answer = vk_request('get', 'messages.send', {
-                        'peer_id': user_id, 'message': 'test'}, {'token': key})
+                        'peer_id': user_id, 'message': 'test'}, token)
                     print(answer)
                 return HttpResponse('ok', content_type="text/plain", status=200)
             return HttpResponse('wrong')

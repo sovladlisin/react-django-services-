@@ -162,8 +162,8 @@ def addPost(request):
     return HttpResponse('Wrong request')
 
 
-def vk_request(type, name, params, user):
-    params['access_token'] = user.token
+def vk_request(type, name, params, token):
+    params['access_token'] = token
     params['v'] = '5.122'
 
     if type == 'get':
@@ -190,15 +190,15 @@ def add_post_to_db(id_check, post_link, user_id, comment):
     user = VkUser.objects.all().get(pk=user_id)
 
     wall_data = vk_request('get', 'wall.getById', {
-                           'posts': post_id}, user)['response'][0]
+                           'posts': post_id}, user.token)['response'][0]
     if post_id[0] == '-':
         owner = vk_request('get', 'groups.getById', {
-                           'group_ids': int(wall_data['owner_id']) * -1}, user)['response'][0]
+                           'group_ids': int(wall_data['owner_id']) * -1}, user.token)['response'][0]
         owner_name = owner['name']
         owner_photo = owner['photo_50']
     else:
         owner = vk_request('get', 'users.get', {
-                           'user_ids': wall_data['owner_id'], 'fields': 'photo_50'}, user)['response'][0]
+                           'user_ids': wall_data['owner_id'], 'fields': 'photo_50'}, user.token)['response'][0]
         owner_name = owner['first_name'] + owner['last_name']
         owner_photo = owner['photo_50']
 
