@@ -175,6 +175,8 @@ def vk_request(type, name, params, user):
 def add_post_to_db(id_check, post_link, user_id, comment):
     if id_check:
         post_id = post_link
+        if '%' in post_id:
+            post_id = post_id.split('%')[0]
     else:
         if 'wall' in post_link:
             if '-' in post_link:
