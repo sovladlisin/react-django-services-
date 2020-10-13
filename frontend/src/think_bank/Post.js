@@ -170,7 +170,6 @@ export class Post extends Component {
     renderAttachments = (attachments, item) => {
         if (attachments != 'Не указано') {
             const data = JSON.parse(attachments)
-            console.log(data)
             return data.map(item => {
                 switch (item.type) {
                     case 'doc':
