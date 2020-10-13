@@ -204,11 +204,11 @@ def add_post_to_db(id_check, post_link, user_id, comment):
                            'user_ids': wall_data['owner_id'], 'fields': 'photo_50'}, user.token, '5.124')['response'][0]
         owner_name = owner['first_name'] + " " + owner['last_name']
         owner_photo = owner['photo_50']
-
+    print(wall_data)
     new_post = Post(user=user,
-                    post_id=post_id,
+                    post_id=wall_data['id'],
                     owner_id=wall_data['owner_id'],
-                    owner_name=wall_data['id'],
+                    owner_name=owner_name,
                     owner_img_link=owner_photo,
                     from_id=wall_data['from_id'],
                     date=wall_data['date'],
