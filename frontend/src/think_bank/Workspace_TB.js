@@ -72,7 +72,7 @@ export class Workspace_TB extends Component {
         if (this.props.posts.length === 0) return (<p className='empty-bank'>Банк пуст</p>)
         var data = this.props.posts
         data.sort((a, b) => {
-            if (a.id < b.id) {
+            if (new Date(a.date_added) < new Date(b.date_added)) {
                 return 1;
             }
             return -1;

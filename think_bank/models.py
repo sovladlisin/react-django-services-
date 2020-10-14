@@ -27,6 +27,8 @@ class Post(models.Model):
     views_count = models.BigIntegerField(default=0)
     attachments = models.CharField(default='Не указано', max_length=30000)
 
+    date_added = models.CharField(default='', max_length=200)
+
 
 class VkUserPermissions(models.Model):
     owner = models.ForeignKey(
@@ -41,6 +43,7 @@ class Comment(models.Model):
     user = models.ForeignKey(
         VkUser, blank=False, null=False, related_name='comment_owner', on_delete=models.CASCADE)
     comment = models.CharField(default='', max_length=300)
+    date = models.CharField(default='', max_length=200)
 
 
 class Test(models.Model):

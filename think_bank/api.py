@@ -13,6 +13,7 @@ from django.http import JsonResponse
 from django.core import serializers
 from django.forms.models import model_to_dict
 import json
+import datetime
 # perm = permissions.IsAuthenticated
 perm = permissions.AllowAny
 
@@ -145,7 +146,7 @@ def getPostComments(request):
             for comment in comments:
                 user = comment.user
                 temp = {'id': comment.pk, 'post': post.pk, 'user': user.pk,
-                        'user_img': user.user_img, 'user_name': user.user_name, 'comment': comment.comment}
+                        'user_img': user.user_img, 'user_name': user.user_name, 'comment': comment.comment, 'date': comment.date}
                 result.append(temp)
             return JsonResponse(result, safe=False)
         return HttpResponse('404')
@@ -176,58 +177,60 @@ def vk_request(type, name, params, token, v):
 def add_post_to_db(id_check, post_link, user_id, comment):
     user = VkUser.objects.all().get(pk=user_id)
 
-    if id_check:
-        post_id = post_link
-    else:
-        if 'wall' in post_link:
-            if '-' in post_link:
-                splitted = post_link.split('-')
-                post_id = splitted[1]
-                post_id = "-" + post_id
-            else:
-                splitted = post_link.split('wall')[1]
-                post_id = splitted.split('?')[0]
-        else:
-            send_message(
-                'Прошу прощения, я не понимаю данную ссылку. \nВы можете добавлять посты исключительно из \"Вконтакте\". \n\nДля дополнительной информации напишите мне \"Помощь\".', user.user_id)
-            return {'error': 'not a link'}
+    try:
 
-    wall_data = vk_request('get', 'wall.getById', {
-                           'posts': post_id}, user.token, '5.124')['response'][0]
-    if post_id[0] == '-':
-        owner = vk_request('get', 'groups.getById', {
-                           'group_ids': int(wall_data['owner_id']) * -1}, user.token, '5.124')['response'][0]
-        owner_name = owner['name']
-        owner_photo = owner['photo_50']
-    else:
-        owner = vk_request('get', 'users.get', {
-                           'user_ids': wall_data['owner_id'], 'fields': 'photo_50'}, user.token, '5.124')['response'][0]
-        owner_name = owner['first_name'] + " " + owner['last_name']
-        owner_photo = owner['photo_50']
-    print(wall_data)
-    new_post = Post(user=user,
-                    post_id=wall_data['id'],
-                    owner_id=wall_data['owner_id'],
-                    owner_name=owner_name,
-                    owner_img_link=owner_photo,
-                    from_id=wall_data['from_id'],
-                    date=wall_data['date'],
-                    text=wall_data['text'],
-                    comments_count=wall_data.get(
-                        'comments', {'count': 0})['count'],
-                    likes_count=wall_data.get(
-                        'likes', {'count': 0})['count'],
-                    reposts_count=wall_data.get(
-                        'reposts', {'count': 0})['count'],
-                    views_count=wall_data.get(
-                        'views', {'count': 0})['count'],
-                    attachments=json.dumps(wall_data.get('attachments', [])))
-    new_post.save()
-    if comment is not None and len(comment) > 0:
-        new_comment = Comment(user=user, comment=comment, post=new_post)
-        new_comment.save()
-    send_message('Ваш пост успешно сохранен!', user.user_id)
-    return new_post
+        if id_check:
+            post_id = post_link
+        else:
+            if 'wall' in post_link:
+                if '-' in post_link:
+                    splitted = post_link.split('-')
+                    post_id = splitted[1]
+                    post_id = "-" + post_id
+                else:
+                    splitted = post_link.split('wall')[1]
+                    post_id = splitted.split('?')[0]
+            else:
+                return {'error': True}
+
+        wall_data = vk_request('get', 'wall.getById', {
+            'posts': post_id}, user.token, '5.124')['response'][0]
+        if post_id[0] == '-':
+            owner = vk_request('get', 'groups.getById', {
+                'group_ids': int(wall_data['owner_id']) * -1}, user.token, '5.124')['response'][0]
+            owner_name = owner['name']
+            owner_photo = owner['photo_50']
+        else:
+            owner = vk_request('get', 'users.get', {
+                'user_ids': wall_data['owner_id'], 'fields': 'photo_50'}, user.token, '5.124')['response'][0]
+            owner_name = owner['first_name'] + " " + owner['last_name']
+            owner_photo = owner['photo_50']
+        new_post = Post(user=user,
+                        date_added=datetime.datetime.now(),
+                        post_id=wall_data['id'],
+                        owner_id=wall_data['owner_id'],
+                        owner_name=owner_name,
+                        owner_img_link=owner_photo,
+                        from_id=wall_data['from_id'],
+                        date=wall_data['date'],
+                        text=wall_data['text'],
+                        comments_count=wall_data.get(
+                            'comments', {'count': 0})['count'],
+                        likes_count=wall_data.get(
+                            'likes', {'count': 0})['count'],
+                        reposts_count=wall_data.get(
+                            'reposts', {'count': 0})['count'],
+                        views_count=wall_data.get(
+                            'views', {'count': 0})['count'],
+                        attachments=json.dumps(wall_data.get('attachments', [])))
+        new_post.save()
+        if comment is not None and len(comment) > 0:
+            new_comment = Comment(user=user, comment=comment,
+                                  post=new_post, date=datetime.datetime.now())
+            new_comment.save()
+        return new_post
+    except Exception as e:
+        return {'error': True}
 
 
 def send_message(message, user_id):

@@ -93,12 +93,12 @@ export const purge = () => dispatch => {
     })
 }
 
-export const addComment = (comment, post_id, user) => dispatch => {
-    const body = { post: post_id, user: user.id, comment: comment }
+export const addComment = (date, comment, post_id, user) => dispatch => {
+    const body = { post: post_id, user: user.id, comment: comment, date: date }
     axios.post(URL + `api/comments/`, body).then(res => {
         dispatch({
             type: ADD_COMMENT,
-            payload: { id: res.data.id, post: post_id, user: user.id, user_img: user.user_img, user_name: user.user_name, comment: comment }
+            payload: { id: res.data.id, post: post_id, user: user.id, user_img: user.user_img, user_name: user.user_name, comment: comment, date: res.data.date }
         })
     })
 }

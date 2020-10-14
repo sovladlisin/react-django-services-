@@ -53,7 +53,7 @@ export class Post extends Component {
 
     addComment = () => {
         const comment = this.state.comment_input
-        this.props.addComment(comment, this.props.post.id, this.props.user)
+        if (comment.length > 0) this.props.addComment(new Date(), comment, this.props.post.id, this.props.user)
     }
 
     componentDidUpdate(prevProps) {
@@ -74,11 +74,16 @@ export class Post extends Component {
         var item = this.props.post
 
         const date = new Date(item.date * 1000);
-        const text_style = this.state.show_full ? {} : { height: '100px', overflow: 'hidden' }
+        const full_check = item.text.length > 300 ? true : false
+
+        const text_style = full_check && this.state.show_full ? {} : { height: '100px', overflow: 'hidden' }
         const post_custom_id = item.owner_id + "_" + item.post_id
         var post_link = "https://vk.com/wall" + post_custom_id
 
         var check_comment_perm = this.state.check_comment_perm
+
+        var options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+        const date_string = new Date(item.date_added).toLocaleDateString('en-GB', options)
 
         const comment_count = this.props.comments[this.props.post.id] === undefined ? 0 : this.props.comments[this.props.post.id].length
         return (
@@ -87,14 +92,17 @@ export class Post extends Component {
                     <div className='header'>
                         <img className='thumbnail' src={item.owner_img_link}></img>
                         <p className='name'><a target="_blank" rel="noopener noreferrer" href={post_link}>{item.owner_name}</a></p>
-                        <p className='date'>Опубликовано: {date.toLocaleDateString('en-GB')}</p>
+                        <p className='date'>Добавлено: {date_string}</p>
                     </div>
 
                     <div className='content'>
                         <div className='text' style={text_style}>
                             <ReactLinkify>{item.text}</ReactLinkify>
                         </div>
-                        <p id="show-all" onClick={() => { this.setState({ show_full: !this.state.show_full }) }}>{this.state.show_full ? 'Cкрыть' : 'Показать полностью...'}</p>
+                        {full_check ?
+                            <p id="show-all" onClick={() => { this.setState({ show_full: !this.state.show_full }) }}>{this.state.show_full ? 'Cкрыть' : 'Показать полностью...'}</p>
+                            : null
+                        }
                         <div className='attachments'>
                             {this.renderAttachments(item.attachments, item)}
                         </div>
@@ -134,6 +142,7 @@ export class Post extends Component {
         if (e.key === 'Enter') {
             if (!this.state.shift) {
                 this.addComment()
+                e.target.value = ''
                 this.setState({ comment_input: '', shift: false })
             }
             else {
@@ -149,7 +158,16 @@ export class Post extends Component {
     renderComments = () => {
         const comments = this.props.comments[this.props.post.id]
         if (comments === undefined) return null
+        comments.sort((a, b) => {
+            if (new Date(a.date) < new Date(b.date)) {
+                return 1;
+            }
+            return -1;
+        });
         return comments.map(item => {
+            const date = new Date(item.date)
+            var options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+            const date_string = date.toLocaleDateString('en-GB', options)
             const check_delete_perms = this.props.post.user === this.props.user.id || item.user === this.props.user.id ? true : false
             return (
                 <div className='comment'>
@@ -158,6 +176,7 @@ export class Post extends Component {
                     </div>
                     <div className='comment-data'>
                         <p className='comment-name'>{item.user_name}</p>
+                        <p className='comment-date'>{date_string}</p>
                         <p className='comment-text'>{item.comment}</p>
                         {check_delete_perms ? <button className='delete-comment' onClick={() => this.props.deleteComment(item.id, this.props.post.id)}>Удалить</button> : null}
                     </div>

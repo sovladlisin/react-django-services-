@@ -6,6 +6,7 @@ from django.http import StreamingHttpResponse, HttpResponseRedirect, HttpRespons
 from .api import add_post_to_db, vk_request, send_message
 # Create your views here.
 key = 'test_key_2138573p9148'
+error_message = 'Прошу прощения, я не понимаю данную ссылку. \nВы можете добавлять посты исключительно из \"Вконтакте\". \n\nДля дополнительной информации напишите мне \"Помощь\".'
 
 
 @csrf_exempt
@@ -28,14 +29,17 @@ def Bot(request):
             user = filtered_users.first()
             text = message.get('body', None)
             attachments = message.get('attachments', None)
+
             if attachments is not None:
                 if attachments[0]['type'] == 'wall':
                     wall = attachments[0]['wall']
                     post_id = str(wall['from_id']) + '_' + str(wall['id'])
-                    add_post_to_db(True, post_id, user.pk, text)
+                    answer = add_post_to_db(True, post_id, user.pk, text)
+                    if answer.get('error', False):
+                        send_message(error_message, user.user_id)
                     return HttpResponse('ok', content_type="text/plain", status=200)
-            if text is not None:
 
+            if text is not None:
                 if text.lower() == 'помощь':
                     message = ''
                     message += 'Способы загрузки информации из постов в ваш личный банк:\n'
@@ -48,18 +52,23 @@ def Bot(request):
                     return HttpResponse('ok', content_type="text/plain", status=200)
 
                 split = text.split(' ')
+
                 if (len(split) == 2):
-                    add_post_to_db(False, split[0], user.pk, split[1])
+                    answer = add_post_to_db(False, split[0], user.pk, split[1])
+
                 if (len(split) > 2):
                     post_link = split[0]
                     split = split.pop(0)
                     text = ''
                     for i in split:
                         text += i
-                    add_post_to_db(False, post_link, user.pk, i)
-                if (len(split) == 1):
-                    add_post_to_db(False, split[0], user.pk, None)
+                    answer = add_post_to_db(False, post_link, user.pk, i)
 
+                if (len(split) == 1):
+                    answer = add_post_to_db(False, split[0], user.pk, None)
+
+                if answer.get('error', False):
+                    send_message(error_message, user.user_id)
             return HttpResponse('ok', content_type="text/plain", status=200)
         return HttpResponse('ok', content_type="text/plain", status=200)
     return HttpResponse('ok', content_type="text/plain", status=200)
