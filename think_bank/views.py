@@ -68,9 +68,10 @@ def Bot(request):
                 if (len(split) == 1):
                     answer = add_post_to_db(False, split[0], user.pk, None)
 
-                print('Але ВАСЯЯЯ:')
-                print(answer)
-                print(answer.get('error', 'MAMAMAAAAAAAAAAAAAAAA'))
+                if answer.get('error', False):
+                    send_message(error_message, user_id)
+                else:
+                    send_message('Пост успешно добавлен', user_id)
                 return HttpResponse('ok', content_type="text/plain", status=200)
             return HttpResponse('ok', content_type="text/plain", status=200)
         return HttpResponse('ok', content_type="text/plain", status=200)

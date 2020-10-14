@@ -160,7 +160,7 @@ def addPost(request):
         post_link = user.get('post_link', None)
         user_id = user.get('user_id', None)
         new_post = add_post_to_db(False, post_link, user_id, None)
-        return JsonResponse(model_to_dict(new_post), safe=False)
+        return JsonResponse(new_post, safe=False)
     return HttpResponse('Wrong request')
 
 
@@ -226,7 +226,7 @@ def add_post_to_db(id_check, post_link, user_id, comment):
         new_comment = Comment(user=user, comment=comment,
                               post=new_post, date=datetime.datetime.now())
         new_comment.save()
-    return new_post
+    return model_to_dict(new_post)
 
 
 def send_message(message, user_id):
