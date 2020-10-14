@@ -176,9 +176,7 @@ def vk_request(type, name, params, token, v):
 
 def add_post_to_db(id_check, post_link, user_id, comment):
     user = VkUser.objects.all().get(pk=user_id)
-
     try:
-
         if id_check:
             post_id = post_link
         else:
@@ -230,6 +228,7 @@ def add_post_to_db(id_check, post_link, user_id, comment):
             new_comment.save()
         return new_post
     except Exception as e:
+        print(e)
         return {'error': True}
 
 

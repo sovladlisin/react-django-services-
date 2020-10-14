@@ -37,6 +37,8 @@ def Bot(request):
                     answer = add_post_to_db(True, post_id, user.pk, text)
                     if answer.get('error', False):
                         send_message(error_message, user.user_id)
+                    else:
+                        send_message('Пост успешно добавлен!', user.user_id)
                     return HttpResponse('ok', content_type="text/plain", status=200)
 
             if text is not None:
@@ -69,6 +71,8 @@ def Bot(request):
 
                 if answer.get('error', False):
                     send_message(error_message, user.user_id)
+                else:
+                    send_message('Пост успешно добавлен!', user.user_id)
             return HttpResponse('ok', content_type="text/plain", status=200)
         return HttpResponse('ok', content_type="text/plain", status=200)
     return HttpResponse('ok', content_type="text/plain", status=200)
