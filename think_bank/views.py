@@ -70,6 +70,7 @@ def Bot(request):
 
                 print('Але ВАСЯЯЯ:')
                 print(answer)
+                print(answer.get('error', 'MAMAMAAAAAAAAAAAAAAAA'))
                 return HttpResponse('ok', content_type="text/plain", status=200)
             return HttpResponse('ok', content_type="text/plain", status=200)
         return HttpResponse('ok', content_type="text/plain", status=200)
