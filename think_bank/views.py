@@ -56,7 +56,6 @@ def Bot(request):
 
                 if (len(split) == 2):
                     answer = add_post_to_db(False, split[0], user.pk, split[1])
-                    send_message('Пост успешно добавлен!', user.user_id)
 
                 if (len(split) > 2):
                     post_link = split[0]
@@ -65,11 +64,12 @@ def Bot(request):
                     for i in split:
                         text += i
                     answer = add_post_to_db(False, post_link, user.pk, i)
-                    send_message('Пост успешно добавлен!', user.user_id)
 
                 if (len(split) == 1):
                     answer = add_post_to_db(False, split[0], user.pk, None)
-                    send_message('Пост успешно добавлен!', user.user_id)
+
+                print('Але ВАСЯЯЯ:')
+                print(answer)
                 return HttpResponse('ok', content_type="text/plain", status=200)
             return HttpResponse('ok', content_type="text/plain", status=200)
         return HttpResponse('ok', content_type="text/plain", status=200)
